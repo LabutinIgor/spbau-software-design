@@ -21,9 +21,11 @@ public class PipelineCommand {
             InputStream nextInputStream = new PipedInputStream(currentOutputStream);
 
             commands.get(i).run(currentInputStream, currentOutputStream, environment);
+            currentOutputStream.close();
 
             currentInputStream = nextInputStream;
         }
         commands.get(commands.size() - 1).run(currentInputStream, os, environment);
+        os.flush();
     }
 }
