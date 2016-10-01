@@ -5,8 +5,8 @@ import ru.spbau.mit.Environment;
 import java.io.*;
 
 /**
- * The Command class provides interface for command of shell
- * all commands should derive this class
+ * Command is interface for command of shell
+ * all commands should implements this interface
  */
 public interface Command {
 

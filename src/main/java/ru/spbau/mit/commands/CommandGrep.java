@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+/**
+ * The CommandWc class is command that finds matches of regex in
+ * given files or input stream if no files given
+ */
 public class CommandGrep implements Command {
     @Parameter
     private List<String> parameters = new ArrayList<>();
