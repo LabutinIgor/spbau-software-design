@@ -1,6 +1,5 @@
 package ru.spbau.mit;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -15,7 +14,7 @@ public class Lexer {
     /*
     This method divides line to list of words and service symbols
      */
-    public List<String> parseWords(String line) throws IOException {
+    public List<String> parseWords(String line) {
         List<String> tokens = new ArrayList<>();
         String[] words = line.split(" ");
         for (String word : words) {
@@ -42,7 +41,7 @@ public class Lexer {
     This method substitutes variables that are not in single quotes
     and returns tokens after substitution
      */
-    public List<String> substituteVariables(List<String> tokens, Environment environment) throws IOException {
+    public List<String> substituteVariables(List<String> tokens, Environment environment) {
         List<String> substitutedTokens = new ArrayList<>();
 
         boolean inSingleQuotes = false;

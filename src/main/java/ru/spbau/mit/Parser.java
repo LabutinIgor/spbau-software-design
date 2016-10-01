@@ -33,7 +33,6 @@ public class Parser {
                     arguments.add(tokens.get(currentToken));
                 }
             }
-
             currentToken++;
         }
         if (currentArgument.size() != 0) {
@@ -46,6 +45,9 @@ public class Parser {
     This method parses one command from list of tokens begins from currentToken
      */
     private Command parseCommand(List<String> tokens) throws IOException {
+        if (currentToken == tokens.size() - 1) {
+            throw new IOException("Empty command");
+        }
         String commandName = tokens.get(currentToken++);
 
         if (tokens.get(currentToken).equals("=")) {
@@ -77,7 +79,6 @@ public class Parser {
      */
     public List<Command> parseCommands(List<String> tokens) throws IOException {
         List<Command> commands = new ArrayList<>();
-
         currentToken = 0;
         tokens.add("|");
 

@@ -18,14 +18,14 @@ public class CommandWc extends Command {
     /*
     This method executes command for one file or input stream
      */
-    private void handleOneArgument(InputStream is, OutputStream os) {
+    private void handleOneArgument(InputStream is, OutputStream os) throws IOException {
         Scanner in = new Scanner(is);
-        int lines = 0, words = 0, bytes = 0;
+        int lines = 0, words = 0;
+        int bytes = is.available();
         while (in.hasNextLine()) {
             String line = in.nextLine();
             lines++;
             words += line.split(" ").length;
-            bytes += line.getBytes().length;
         }
         PrintWriter out = new PrintWriter(os);
         out.println(lines + " " + words + " " + bytes);
