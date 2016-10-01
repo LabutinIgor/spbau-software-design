@@ -1,6 +1,6 @@
 package ru.spbau.mit;
 
-import junit.framework.Assert;
+import com.beust.jcommander.JCommander;
 import org.junit.Test;
 import ru.spbau.mit.commands.Command;
 import ru.spbau.mit.commands.CommandEcho;
@@ -9,7 +9,6 @@ import ru.spbau.mit.commands.CommandWc;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
@@ -21,8 +20,12 @@ public class ParserTest {
     @Test
     public void testParseCommands() {
         List<String> tokens = new ArrayList<>(Arrays.asList("echo", "a", "'", "b", "c", "'", "|", "wc"));
+        Command commandEcho = new CommandEcho();
+        new JCommander(commandEcho, "a", "b c");
+        Command commandWc = new CommandWc();
+        new JCommander(commandWc);
         List<Command> expectedCommands =
-                Arrays.asList(new CommandEcho(Arrays.asList("a", "b c")), new CommandWc(Collections.emptyList()));
+                Arrays.asList(commandEcho, commandWc);
         Parser parser = new Parser();
         try {
             List<Command> commands = parser.parseCommands(tokens);
@@ -31,12 +34,6 @@ public class ParserTest {
                 Command expectedCommand = expectedCommands.get(i);
                 Command command = commands.get(i);
                 assertEquals(expectedCommand.getClass(), command.getClass());
-                List<String> expectedArgs = expectedCommand.getArgs();
-                List<String> args = command.getArgs();
-                assertSame(expectedArgs.size(), args.size());
-                for (int j = 0; j < expectedArgs.size(); j++) {
-                    assertEquals(expectedArgs.get(i), args.get(i));
-                }
             }
         } catch (IOException exception) {
             fail("Unexpected exception: ", exception);

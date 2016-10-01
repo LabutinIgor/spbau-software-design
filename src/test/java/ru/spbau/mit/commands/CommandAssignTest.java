@@ -1,5 +1,6 @@
 package ru.spbau.mit.commands;
 
+import com.beust.jcommander.JCommander;
 import org.junit.Test;
 import ru.spbau.mit.Environment;
 
@@ -15,7 +16,8 @@ public class CommandAssignTest {
     @Test
     public void testRun() {
         Environment environment = new Environment();
-        CommandAssign commandAssign = new CommandAssign(Arrays.asList("a", "x"));
+        CommandAssign commandAssign = new CommandAssign();
+        new JCommander(commandAssign, "a", "x");
         try {
             commandAssign.run(System.in, System.out, environment);
             assertEquals("x", environment.getValue("a"));

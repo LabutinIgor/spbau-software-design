@@ -1,17 +1,18 @@
 package ru.spbau.mit.commands;
 
+import com.beust.jcommander.Parameter;
 import ru.spbau.mit.Environment;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * The CommandEcho class is command that ignores input stream and prints all its arguments
  */
-public class CommandEcho extends Command {
-    public CommandEcho(List<String> args) {
-        super(args);
-    }
+public class CommandEcho implements Command {
+    @Parameter
+    private List<String> parameters = new ArrayList<>();
 
     /*
     This method executes command
@@ -20,7 +21,7 @@ public class CommandEcho extends Command {
     public void run(InputStream is, OutputStream os, Environment environment)
             throws IOException {
         PrintWriter out = new PrintWriter(os);
-        out.println(String.join(" ", getArgs()));
+        out.println(String.join(" ", parameters));
         out.flush();
     }
 }

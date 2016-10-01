@@ -2,9 +2,11 @@ package ru.spbau.mit;
 
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import static junitx.framework.Assert.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
@@ -33,11 +35,14 @@ public class LexerTest {
         List<String> tokens = Arrays.asList("echo", "$", "a", "'", "$", "b", "'", "\"", "$", "c", "\"");
         List<String> expectedSubstitutedTokens = Arrays.asList("echo", "a", "'", "$b", "'", "\"", "c", "\"");
         Lexer lexer = new Lexer();
-        List<String> substitutedTokens = lexer.substituteVariables(tokens, environment);
-
-        assertSame(expectedSubstitutedTokens.size(), substitutedTokens.size());
-        for (int i = 0; i < expectedSubstitutedTokens.size(); i++) {
-            assertEquals(expectedSubstitutedTokens.get(i), substitutedTokens.get(i));
+        try {
+            List<String> substitutedTokens = lexer.substituteVariables(tokens, environment);
+            assertSame(expectedSubstitutedTokens.size(), substitutedTokens.size());
+            for (int i = 0; i < expectedSubstitutedTokens.size(); i++) {
+                assertEquals(expectedSubstitutedTokens.get(i), substitutedTokens.get(i));
+            }
+        } catch (IOException exception) {
+            fail("Unexpected exception: ", exception);
         }
     }
 }

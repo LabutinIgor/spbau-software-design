@@ -1,5 +1,6 @@
 package ru.spbau.mit;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -41,7 +42,7 @@ public class Lexer {
     This method substitutes variables that are not in single quotes
     and returns tokens after substitution
      */
-    public List<String> substituteVariables(List<String> tokens, Environment environment) {
+    public List<String> substituteVariables(List<String> tokens, Environment environment) throws IOException {
         List<String> substitutedTokens = new ArrayList<>();
 
         boolean inSingleQuotes = false;

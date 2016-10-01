@@ -1,5 +1,6 @@
 package ru.spbau.mit.commands;
 
+import com.beust.jcommander.JCommander;
 import org.junit.Test;
 import ru.spbau.mit.Environment;
 
@@ -19,7 +20,8 @@ public class CommandEchoTest {
 
     @Test
     public void testRun() {
-        CommandEcho commandEcho = new CommandEcho(Arrays.asList("a" ,"b c"));
+        Command commandEcho = new CommandEcho();
+        new JCommander(commandEcho, "a", "b c");
         try {
             PipedOutputStream currentOutputStream = new PipedOutputStream();
             InputStream nextInputStream = new PipedInputStream(currentOutputStream);

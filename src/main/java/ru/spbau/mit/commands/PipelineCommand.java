@@ -9,7 +9,7 @@ import java.util.List;
  * The PipelineCommand class contains list of commands in one pipeline
  * and method run to execute all commands with corresponding input/output streams
  */
-public class PipelineCommand {
+public class PipelineCommand implements Command {
     private List<Command> commands;
 
     /*
