@@ -34,7 +34,9 @@ public class Lexer {
             if (!currentSubWord.equals("")) {
                 tokens.add(currentSubWord);
             }
+            tokens.add(" ");
         }
+        tokens.remove(tokens.size() - 1);
         return tokens;
     }
 

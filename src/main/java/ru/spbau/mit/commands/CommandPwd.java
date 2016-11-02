@@ -21,5 +21,6 @@ public class CommandPwd extends Command {
             throws IOException {
         PrintWriter out = new PrintWriter(os);
         out.println(System.getProperty("user.dir"));
+        out.flush();
     }
 }

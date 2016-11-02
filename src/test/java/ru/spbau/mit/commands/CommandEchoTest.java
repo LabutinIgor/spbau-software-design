@@ -13,7 +13,6 @@ import java.util.Scanner;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
-import static junitx.framework.Assert.fail;
 
 public class CommandEchoTest {
 

@@ -4,11 +4,9 @@ import org.junit.Test;
 import ru.spbau.mit.Environment;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import static junit.framework.Assert.assertEquals;
-import static junitx.framework.Assert.fail;
 
 public class CommandAssignTest {
 

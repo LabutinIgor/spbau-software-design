@@ -1,6 +1,5 @@
 package ru.spbau.mit;
 
-import junit.framework.Assert;
 import org.junit.Test;
 import ru.spbau.mit.commands.Command;
 import ru.spbau.mit.commands.CommandEcho;
@@ -13,14 +12,14 @@ import java.util.Collections;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
-import static junitx.framework.Assert.fail;
 import static org.junit.Assert.assertSame;
 
 public class ParserTest {
 
     @Test
     public void testParseCommands() throws IOException {
-        List<String> tokens = new ArrayList<>(Arrays.asList("echo", "a", "'", "b", "c", "'", "|", "wc"));
+        List<String> tokens = new ArrayList<>(Arrays.asList("echo", " ", "a", " ", "'", "b", " ", "c", "'",
+                "|", "wc"));
         List<Command> expectedCommands =
                 Arrays.asList(new CommandEcho(Arrays.asList("a", "b c")), new CommandWc(Collections.emptyList()));
         Parser parser = new Parser();
