@@ -12,21 +12,21 @@ import java.util.List;
 public abstract class Command {
     private List<String> args;
 
-    /*
-    This constructor constructs class from list of arguments of this command
+    /**
+     * This constructor constructs class from list of arguments of this command
      */
     public Command(List<String> args) {
         this.args = args;
     }
 
-    /*
-    This method executes command with given input/output streams and environment
+    /**
+     * This method executes command with given input/output streams and environment
      */
     public abstract void run(InputStream is, OutputStream os, Environment environment)
             throws IOException;
 
-    /*
-    This method returns arguments of this command
+    /**
+     * This method returns arguments of this command
      */
     public List<String> getArgs() {
         return args;

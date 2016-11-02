@@ -2,6 +2,7 @@ package ru.spbau.mit;
 
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class LexerTest {
     }
 
     @Test
-    public void testSubstituteVariables() {
+    public void testSubstituteVariables() throws IOException {
         Environment environment = new Environment();
         environment.assign("a", "a");
         environment.assign("b", "b");

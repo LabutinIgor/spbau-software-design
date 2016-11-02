@@ -20,8 +20,8 @@ public final class Shell {
     private Shell() {
     }
 
-    /*
-    This method launches shell
+    /**
+     * This method launches shell
      */
     public static void main(String[] args) {
         try {

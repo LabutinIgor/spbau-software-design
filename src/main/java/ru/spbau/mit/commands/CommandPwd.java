@@ -13,8 +13,8 @@ public class CommandPwd extends Command {
         super(args);
     }
 
-    /*
-    This method executes command
+    /**
+     * This method executes command
      */
     @Override
     public void run(InputStream is, OutputStream os, Environment environment)

@@ -19,27 +19,25 @@ import static org.junit.Assert.assertSame;
 public class ParserTest {
 
     @Test
-    public void testParseCommands() {
+    public void testParseCommands() throws IOException {
         List<String> tokens = new ArrayList<>(Arrays.asList("echo", "a", "'", "b", "c", "'", "|", "wc"));
         List<Command> expectedCommands =
                 Arrays.asList(new CommandEcho(Arrays.asList("a", "b c")), new CommandWc(Collections.emptyList()));
         Parser parser = new Parser();
-        try {
-            List<Command> commands = parser.parseCommands(tokens);
-            assertSame(expectedCommands.size(), commands.size());
-            for (int i = 0; i < expectedCommands.size(); i++) {
-                Command expectedCommand = expectedCommands.get(i);
-                Command command = commands.get(i);
-                assertEquals(expectedCommand.getClass(), command.getClass());
-                List<String> expectedArgs = expectedCommand.getArgs();
-                List<String> args = command.getArgs();
-                assertSame(expectedArgs.size(), args.size());
-                for (int j = 0; j < expectedArgs.size(); j++) {
-                    assertEquals(expectedArgs.get(i), args.get(i));
-                }
+
+        List<Command> commands = parser.parseCommands(tokens);
+        assertSame(expectedCommands.size(), commands.size());
+        for (int i = 0; i < expectedCommands.size(); i++) {
+            Command expectedCommand = expectedCommands.get(i);
+            Command command = commands.get(i);
+            assertEquals(expectedCommand.getClass(), command.getClass());
+            List<String> expectedArgs = expectedCommand.getArgs();
+            List<String> args = command.getArgs();
+            assertSame(expectedArgs.size(), args.size());
+            for (int j = 0; j < expectedArgs.size(); j++) {
+                assertEquals(expectedArgs.get(i), args.get(i));
             }
-        } catch (IOException exception) {
-            fail("Unexpected exception: ", exception);
         }
     }
 }
+

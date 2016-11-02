@@ -15,8 +15,8 @@ public class CommandCat extends Command {
         super(args);
     }
 
-    /*
-    This method executes command for one file or input stream
+    /**
+     * This method executes command for one file or input stream
      */
     private void handleOneArgument(InputStream is, OutputStream os) {
         Scanner in = new Scanner(is);
@@ -28,8 +28,8 @@ public class CommandCat extends Command {
         out.flush();
     }
 
-    /*
-    This method executes command
+    /**
+     * This method executes command
      */
     @Override
     public void run(InputStream is, OutputStream os, Environment environment)
