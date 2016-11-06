@@ -16,7 +16,8 @@ public class LexerTest {
     public void testParseWords() {
         String line = "echo a $a 'a b' \"x\" | wc";
         List<String> expectedTokens = Arrays.asList(
-                "echo", "a", "$", "a", "'", "a", "b", "'", "\"", "x", "\"", "|", "wc");
+                "echo", " ", "a", " ", "$", "a", " ", "'", "a",
+                " ", "b", "'", " ", "\"", "x", "\"", " ", "|", " ", "wc");
         Lexer lexer = new Lexer();
         List<String> tokens = lexer.parseWords(line);
 
@@ -27,13 +28,15 @@ public class LexerTest {
     }
 
     @Test
-    public void testSubstituteVariables() {
+    public void testSubstituteVariables() throws IOException {
         Environment environment = new Environment();
         environment.assign("a", "a");
         environment.assign("b", "b");
         environment.assign("c", "c");
-        List<String> tokens = Arrays.asList("echo", "$", "a", "'", "$", "b", "'", "\"", "$", "c", "\"");
-        List<String> expectedSubstitutedTokens = Arrays.asList("echo", "a", "'", "$b", "'", "\"", "c", "\"");
+        List<String> tokens = Arrays.asList("echo", " ", "$", "a", " ", "'", "$", "b", "'",
+                " ", "\"", "$", "c", "\"");
+        List<String> expectedSubstitutedTokens = Arrays.asList("echo", " ", "a", " ", "'", "$b", "'",
+                " ", "\"", "c", "\"");
         Lexer lexer = new Lexer();
         try {
             List<String> substitutedTokens = lexer.substituteVariables(tokens, environment);

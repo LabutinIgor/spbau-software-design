@@ -20,8 +20,8 @@ public final class Shell {
     private Shell() {
     }
 
-    /*
-    This method launches shell
+    /**
+     * This method launches shell
      */
     public static void main(String[] args) {
         try {
@@ -43,6 +43,7 @@ public final class Shell {
                 PipelineCommand pipelineCommand = new PipelineCommand(commands);
                 pipelineCommand.run(System.in, System.out, environment);
             } catch (IOException exception) {
+                System.out.println("Error: " + exception.getMessage());
                 logger.log(Level.WARNING, "Exception in line '" + lastLine + "':", exception);
             }
             lastLine = in.nextLine();

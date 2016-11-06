@@ -12,15 +12,15 @@ import java.util.List;
 public class PipelineCommand implements Command {
     private List<Command> commands;
 
-    /*
-    This constructor constructs class from list of consecutive commands of one pipeline
+    /**
+     * This constructor constructs class from list of consecutive commands of one pipeline
      */
     public PipelineCommand(List<Command> commands) {
         this.commands = commands;
     }
 
-    /*
-    This method successively executes all commands with corresponding input/output streams
+    /**
+     * This method successively executes all commands with corresponding input/output streams
      */
     public void run(InputStream is, OutputStream os, Environment environment)
             throws IOException {

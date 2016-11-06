@@ -12,8 +12,8 @@ public class Lexer {
             new Character[]{'\'', '"', '=', '$', '|'}
     ));
 
-    /*
-    This method divides line to list of words and service symbols
+    /**
+     * This method divides line to list of words and service symbols
      */
     public List<String> parseWords(String line) {
         List<String> tokens = new ArrayList<>();
@@ -34,13 +34,15 @@ public class Lexer {
             if (!currentSubWord.equals("")) {
                 tokens.add(currentSubWord);
             }
+            tokens.add(" ");
         }
+        tokens.remove(tokens.size() - 1);
         return tokens;
     }
 
-    /*
-    This method substitutes variables that are not in single quotes
-    and returns tokens after substitution
+    /**
+     * This method substitutes variables that are not in single quotes
+     * and returns tokens after substitution
      */
     public List<String> substituteVariables(List<String> tokens, Environment environment) throws IOException {
         List<String> substitutedTokens = new ArrayList<>();
@@ -59,7 +61,11 @@ public class Lexer {
                         if (inSingleQuotes) {
                             substitutedTokens.add("$" + token);
                         } else {
-                            substitutedTokens.addAll(parseWords(environment.getValue(token)));
+                            String value = environment.getValue(token);
+                            if (value == null) {
+                                throw new IOException("No such variable");
+                            }
+                            substitutedTokens.addAll(parseWords(value));
                         }
                         isLastTokenSubstitution = false;
                     } else {

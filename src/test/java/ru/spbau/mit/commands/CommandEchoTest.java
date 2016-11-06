@@ -14,7 +14,6 @@ import java.util.Scanner;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
-import static junitx.framework.Assert.fail;
 
 public class CommandEchoTest {
 
@@ -22,18 +21,14 @@ public class CommandEchoTest {
     public void testRun() {
         Command commandEcho = new CommandEcho();
         new JCommander(commandEcho, "a", "b c");
-        try {
-            PipedOutputStream currentOutputStream = new PipedOutputStream();
-            InputStream nextInputStream = new PipedInputStream(currentOutputStream);
-            commandEcho.run(System.in, currentOutputStream, new Environment());
-            currentOutputStream.close();
-            Scanner in = new Scanner(nextInputStream);
-            assertTrue(in.hasNextLine());
-            String expectedOutput = "a b c";
-            assertEquals(expectedOutput, in.nextLine());
-            assertFalse(in.hasNextLine());
-        } catch (IOException exception) {
-            fail("Unexpected exception: ", exception);
-        }
+        PipedOutputStream currentOutputStream = new PipedOutputStream();
+        InputStream nextInputStream = new PipedInputStream(currentOutputStream);
+        commandEcho.run(System.in, currentOutputStream, new Environment());
+        currentOutputStream.close();
+        Scanner in = new Scanner(nextInputStream);
+        assertTrue(in.hasNextLine());
+        String expectedOutput = "a b c";
+        assertEquals(expectedOutput, in.nextLine());
+        assertFalse(in.hasNextLine());
     }
 }

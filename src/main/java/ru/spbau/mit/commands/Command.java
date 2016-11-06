@@ -10,8 +10,8 @@ import java.io.*;
  */
 public interface Command {
 
-    /*
-    This method executes command with given input/output streams and environment
+    /**
+     * This method executes command with given input/output streams and environment
      */
     void run(InputStream is, OutputStream os, Environment environment) throws IOException;
 

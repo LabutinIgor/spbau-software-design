@@ -15,8 +15,8 @@ public class CommandAssign implements Command {
     @Parameter
     private List<String> parameters = new ArrayList<>();
 
-    /*
-    This method executes command
+    /**
+     * This method executes command
      */
     @Override
     public void run(InputStream is, OutputStream os, Environment environment)

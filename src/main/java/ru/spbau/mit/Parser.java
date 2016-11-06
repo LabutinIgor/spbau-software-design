@@ -13,8 +13,8 @@ import java.util.*;
 public class Parser {
     private int currentToken;
 
-    /*
-    This method parses arguments of one command from list of tokens begins from currentToken
+    /**
+     * This method parses arguments of one command from list of tokens begins from currentToken
      */
     private List<String> parseArguments(List<String> tokens) throws IOException {
         List<String> arguments = new ArrayList<>();
@@ -24,14 +24,16 @@ public class Parser {
             if (tokens.get(currentToken).equals("'") || tokens.get(currentToken).equals("\"")) {
                 inQuotes = !inQuotes;
                 if (!inQuotes) {
-                    arguments.add(String.join(" ", currentArgument));
+                    arguments.add(String.join("", currentArgument));
                     currentArgument.clear();
                 }
             } else {
                 if (inQuotes) {
                     currentArgument.add(tokens.get(currentToken));
                 } else {
-                    arguments.add(tokens.get(currentToken));
+                    if (!tokens.get(currentToken).equals(" ")) {
+                        arguments.add(tokens.get(currentToken));
+                    }
                 }
             }
             currentToken++;
@@ -54,6 +56,9 @@ public class Parser {
     This method parses one command from list of tokens begins from currentToken
      */
     private Command parseCommand(List<String> tokens) throws IOException {
+        while (currentToken < tokens.size() - 1 && tokens.get(currentToken).equals(" ")) {
+            currentToken++;
+        }
         if (currentToken == tokens.size() - 1) {
             throw new IOException("Empty command");
         }
@@ -84,9 +89,9 @@ public class Parser {
         }
     }
 
-    /*
-    This method parses all commands of one line from list of tokens
-    and returns list of parsed commands
+    /**
+     * This method parses all commands of one line from list of tokens
+     * and returns list of parsed commands
      */
     public List<Command> parseCommands(List<String> tokens) throws IOException {
         List<Command> commands = new ArrayList<>();

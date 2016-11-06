@@ -16,8 +16,8 @@ public class CommandWc implements Command {
     @Parameter
     private List<String> parameters = new ArrayList<>();
 
-    /*
-    This method executes command for one file or input stream
+    /**
+     * This method executes command for one file or input stream
      */
     private void handleOneArgument(InputStream is, OutputStream os) throws IOException {
         Scanner in = new Scanner(is);
@@ -33,8 +33,8 @@ public class CommandWc implements Command {
         out.flush();
     }
 
-    /*
-    This method executes command
+    /**
+     * This method executes command
      */
     @Override
     public void run(InputStream is, OutputStream os, Environment environment)
