@@ -1,5 +1,6 @@
 package ru.spbau.mit;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +21,10 @@ public class Environment {
     /**
      * This method returns value of variable
      */
-    public String getValue(String name) {
+    public String getValue(String name) throws IOException {
+        if (!variables.containsKey(name)) {
+            throw new IOException("No such variable");
+        }
         return variables.get(name);
     }
 

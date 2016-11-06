@@ -1,8 +1,10 @@
 package ru.spbau.mit.commands;
 
+import com.beust.jcommander.Parameter;
 import ru.spbau.mit.Environment;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -10,10 +12,9 @@ import java.util.Scanner;
  * The CommandCat class is command that prints the content of given files or
  * input stream if no files given
  */
-public class CommandCat extends Command {
-    public CommandCat(List<String> args) {
-        super(args);
-    }
+public class CommandCat implements Command {
+    @Parameter
+    private List<String> parameters = new ArrayList<>();
 
     /**
      * This method executes command for one file or input stream
@@ -34,10 +35,10 @@ public class CommandCat extends Command {
     @Override
     public void run(InputStream is, OutputStream os, Environment environment)
             throws IOException {
-        if (getArgs().size() == 0) {
+        if (parameters.size() == 0) {
             handleOneArgument(is, os);
         } else {
-            for (String arg : getArgs()) {
+            for (String arg : parameters) {
                 handleOneArgument(new FileInputStream(new File(arg)), os);
             }
         }

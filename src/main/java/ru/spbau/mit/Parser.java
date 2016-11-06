@@ -1,5 +1,6 @@
 package ru.spbau.mit;
 
+import com.beust.jcommander.JCommander;
 import ru.spbau.mit.commands.*;
 
 import java.io.IOException;
@@ -44,6 +45,14 @@ public class Parser {
     }
 
     /**
+     * This method constructs command with given parameters using JCommander
+     */
+    private Command makeCommandWithArguments(Command command, List<String> args) {
+        new JCommander(command, args.toArray(new String[0]));
+        return command;
+    }
+
+    /**
      * This method parses one command from list of tokens begins from currentToken
      */
     private Command parseCommand(List<String> tokens) throws IOException {
@@ -59,22 +68,24 @@ public class Parser {
             currentToken++;
             List<String> args = parseArguments(tokens);
             args.add(0, commandName);
-            return new CommandAssign(args);
+            return makeCommandWithArguments(new CommandAssign(), args);
         }
 
         List<String> args = parseArguments(tokens);
         switch (commandName) {
             case "cat":
-                return new CommandCat(args);
+                return makeCommandWithArguments(new CommandCat(), args);
             case "echo":
-                return new CommandEcho(args);
+                return makeCommandWithArguments(new CommandEcho(), args);
             case "pwd":
-                return new CommandPwd(args);
+                return makeCommandWithArguments(new CommandPwd(), args);
             case "wc":
-                return new CommandWc(args);
+                return makeCommandWithArguments(new CommandWc(), args);
+            case "grep":
+                return makeCommandWithArguments(new CommandGrep(), args);
             default:
                 args.add(0, commandName);
-                return new CommandExecute(args);
+                return makeCommandWithArguments(new CommandExecute(), args);
         }
     }
 
