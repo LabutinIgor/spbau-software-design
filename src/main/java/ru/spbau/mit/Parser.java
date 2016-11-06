@@ -44,16 +44,16 @@ public class Parser {
         return arguments;
     }
 
-    /*
-    This method constructs command with given parameters using JCommander
+    /**
+     * This method constructs command with given parameters using JCommander
      */
     private Command makeCommandWithArguments(Command command, List<String> args) {
         new JCommander(command, args.toArray(new String[0]));
         return command;
     }
 
-    /*
-    This method parses one command from list of tokens begins from currentToken
+    /**
+     * This method parses one command from list of tokens begins from currentToken
      */
     private Command parseCommand(List<String> tokens) throws IOException {
         while (currentToken < tokens.size() - 1 && tokens.get(currentToken).equals(" ")) {

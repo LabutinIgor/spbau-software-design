@@ -10,7 +10,7 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 /**
- * The CommandWc class is command that finds matches of regex in
+ * The CommandGrep class is command that finds matches of regex in
  * given files or input stream if no files given
  */
 public class CommandGrep implements Command {
@@ -26,8 +26,8 @@ public class CommandGrep implements Command {
     @Parameter(names = "-A", description = "number of printing lines after match")
     private Integer linesAfterMatch = 0;
 
-    /*
-    This method executes command for one file or input stream
+    /**
+     * This method executes command for one file or input stream
      */
     private void handleOneArgument(Pattern pattern, InputStream is, OutputStream os) throws IOException {
         Scanner in = new Scanner(is);
@@ -48,8 +48,8 @@ public class CommandGrep implements Command {
         out.flush();
     }
 
-    /*
-    This method executes command
+    /**
+     * This method executes command
      */
     @Override
     public void run(InputStream is, OutputStream os, Environment environment)

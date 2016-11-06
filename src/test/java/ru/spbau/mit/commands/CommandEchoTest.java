@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.util.Arrays;
 import java.util.Scanner;
 
 import static junit.framework.Assert.assertEquals;
@@ -18,7 +17,7 @@ import static junit.framework.Assert.assertTrue;
 public class CommandEchoTest {
 
     @Test
-    public void testRun() {
+    public void testRun() throws IOException {
         Command commandEcho = new CommandEcho();
         new JCommander(commandEcho, "a", "b c");
         PipedOutputStream currentOutputStream = new PipedOutputStream();
