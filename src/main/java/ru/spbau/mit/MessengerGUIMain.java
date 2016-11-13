@@ -6,13 +6,13 @@ import java.io.IOException;
 
 
 public final class MessengerGUIMain {
-    private static final String HOST = "localhost";
     private static final int PORT = 8081;
 
     private static MessengerClient client = null;
     private static MessengerServer server = null;
 
-    private JTextArea textArea;
+    private JFrame frame;
+    private JTextArea messagesTextArea;
     private JTextArea messageToSendTextArea;
 
     private MessengerGUIMain() {
@@ -23,7 +23,7 @@ public final class MessengerGUIMain {
     }
 
     private void start() {
-        JFrame frame = new JFrame("Messenger");
+        frame = new JFrame("Messenger");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         final JMenuBar menuBar = buildMenuBar();
@@ -57,11 +57,11 @@ public final class MessengerGUIMain {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        textArea = new JTextArea();
-        textArea.setEditable(false);
-        textArea.setSize(250, 150);
+        messagesTextArea = new JTextArea();
+        messagesTextArea.setEditable(false);
+        messagesTextArea.setSize(250, 150);
         ScrollPane scrollPaneMessages = new ScrollPane();
-        scrollPaneMessages.add(textArea);
+        scrollPaneMessages.add(messagesTextArea);
         scrollPaneMessages.setSize(300, 200);
         panel.add(scrollPaneMessages);
 
@@ -85,12 +85,16 @@ public final class MessengerGUIMain {
     }
 
     private synchronized void startServer() {
+        if (client != null) {
+            client.stop();
+        }
         if (server != null) {
             server.stop();
         }
+        client = null;
         server = new MessengerServer(PORT, this);
         try {
-            server.receiveMessages();
+            server.start();
         } catch (IOException e) {
             System.err.println("Error while running server");
         }
@@ -100,9 +104,19 @@ public final class MessengerGUIMain {
         if (client != null) {
             client.stop();
         }
-        client = new MessengerClient(HOST, PORT, this);
+        if (server != null) {
+            server.stop();
+        }
+        server = null;
+
+        String host = JOptionPane.showInputDialog(
+                frame,
+                "Enter host:",
+                "Messenger",
+                JOptionPane.PLAIN_MESSAGE);
+        client = new MessengerClient(host, PORT, this);
         try {
-            client.receiveMessages();
+            client.start();
         } catch (IOException e) {
             System.err.println("Error while running server");
         }
@@ -122,10 +136,10 @@ public final class MessengerGUIMain {
             }
         }
         messageToSendTextArea.setText("");
-        textArea.append(message + "\n");
+        messagesTextArea.append(message + "\n");
     }
 
     public synchronized void receiveMessage(String message) {
-        textArea.append(message + "\n");
+        messagesTextArea.append(message + "\n");
     }
 }

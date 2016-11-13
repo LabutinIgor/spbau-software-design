@@ -1,7 +1,5 @@
 package ru.spbau.mit;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -9,9 +7,7 @@ public class MessengerClient {
     private MessengerGUIMain messengerGUIMain;
     private String host;
     private int port;
-    private DataInputStream inputStream;
-    private DataOutputStream outputStream;
-    private boolean isClosed = false;
+    private Connection connection;
 
     public MessengerClient(String host, int port, MessengerGUIMain messengerGUIMain) {
         this.host = host;
@@ -20,34 +16,21 @@ public class MessengerClient {
     }
 
     public synchronized void sendMessage(String message) throws IOException {
-        outputStream.writeInt(1);
-        outputStream.writeUTF(message);
-        outputStream.flush();
+        connection.sendMessage(message);
     }
 
-    public synchronized void receiveMessages() throws IOException {
+    public synchronized void start() throws IOException {
         Socket socket = new Socket(host, port);
-        inputStream = new DataInputStream(socket.getInputStream());
-        outputStream = new DataOutputStream(socket.getOutputStream());
+        connection = new Connection(socket, messengerGUIMain);
         new Thread(() -> {
             try {
-                while (!isClosed) {
-                    int query = inputStream.readInt();
-                    if (query == 1) {
-                        String message = inputStream.readUTF();
-                        messengerGUIMain.receiveMessage(message);
-                    } else {
-                        isClosed = true;
-                        break;
-                    }
-                }
+                connection.start();
             } catch (IOException ignored) {
             }
-        }
-        ).start();
+        }).start();
     }
 
     public synchronized void stop() {
-        isClosed = true;
+        connection.stop();
     }
 }
