@@ -20,10 +20,10 @@ public class MessengerClient {
     }
 
     public synchronized void start() throws IOException {
-        Socket socket = new Socket(host, port);
-        connection = new Connection(socket, messengerGUIMain);
         new Thread(() -> {
             try {
+                Socket socket = new Socket(host, port);
+                connection = new Connection(socket, messengerGUIMain);
                 connection.start();
             } catch (IOException ignored) {
             }

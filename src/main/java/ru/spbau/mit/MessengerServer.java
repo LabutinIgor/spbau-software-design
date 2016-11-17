@@ -15,11 +15,11 @@ public class MessengerServer {
     }
 
     public synchronized void start() throws IOException {
-        ServerSocket serverSocket = new ServerSocket(port);
-        Socket socket = serverSocket.accept();
-        connection = new Connection(socket, messengerGUIMain);
         new Thread(() -> {
             try {
+                ServerSocket serverSocket = new ServerSocket(port);
+                Socket socket = serverSocket.accept();
+                connection = new Connection(socket, messengerGUIMain);
                 connection.start();
             } catch (IOException ignored) {
             }
