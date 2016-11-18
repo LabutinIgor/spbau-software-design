@@ -1,11 +1,18 @@
 package ru.spbau.mit;
 
+
 import javax.swing.*;
 import java.awt.*;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 
 public final class MessengerGUIMain {
+    private static Logger logger = Logger.getLogger(MessengerGUIMain.class.getName());
+
     private static final int PORT = 8081;
 
     private static MessengerClient client = null;
@@ -19,6 +26,11 @@ public final class MessengerGUIMain {
     }
 
     public static void main(String[] args) {
+        try {
+            LogManager.getLogManager().readConfiguration(new FileInputStream("logging.properties"));
+        } catch (IOException exception) {
+            System.err.println("Could not setup logger configuration: " + exception.toString());
+        }
         new MessengerGUIMain().start();
     }
 
@@ -95,8 +107,8 @@ public final class MessengerGUIMain {
         server = new MessengerServer(PORT, this);
         try {
             server.start();
-        } catch (IOException e) {
-            System.err.println("Error while running server");
+        } catch (IOException exception) {
+            logger.log(Level.WARNING, "Error while running server: ", exception);
         }
     }
 
@@ -117,8 +129,8 @@ public final class MessengerGUIMain {
         client = new MessengerClient(host, PORT, this);
         try {
             client.start();
-        } catch (IOException e) {
-            System.err.println("Error while running server");
+        } catch (IOException exception) {
+            logger.log(Level.WARNING, "Error while running client: ", exception);
         }
     }
 
