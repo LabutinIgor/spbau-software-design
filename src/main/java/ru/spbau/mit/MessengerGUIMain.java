@@ -10,7 +10,7 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 
-public final class MessengerGUIMain {
+public final class MessengerGUIMain implements MessagesReceiver {
     private static Logger logger = Logger.getLogger(MessengerGUIMain.class.getName());
 
     private static final int PORT = 8081;
@@ -175,6 +175,7 @@ public final class MessengerGUIMain {
         messagesTextArea.append(userName + ":\n" + message + "\n");
     }
 
+    @Override
     public synchronized void receiveMessage(String senderName, String message) {
         messagesTextArea.append(senderName + ":\n" + message + "\n");
     }

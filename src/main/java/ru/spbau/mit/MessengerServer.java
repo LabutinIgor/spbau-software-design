@@ -5,7 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class MessengerServer {
-    private MessengerGUIMain messengerGUIMain;
+    private MessagesReceiver messengerGUIMain;
     private int port;
     private Connection connection = null;
 
@@ -19,7 +19,7 @@ public class MessengerServer {
             try {
                 ServerSocket serverSocket = new ServerSocket(port);
                 Socket socket = serverSocket.accept();
-                connection = new Connection(socket, messengerGUIMain);
+                connection = new Connection(socket.getInputStream(), socket.getOutputStream(), messengerGUIMain);
                 connection.start();
             } catch (IOException ignored) {
             }

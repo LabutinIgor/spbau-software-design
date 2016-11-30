@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class MessengerClient {
-    private MessengerGUIMain messengerGUIMain;
+    private MessagesReceiver messengerGUIMain;
     private String host;
     private int port;
     private Connection connection = null;
@@ -19,7 +19,7 @@ public class MessengerClient {
         new Thread(() -> {
             try {
                 Socket socket = new Socket(host, port);
-                connection = new Connection(socket, messengerGUIMain);
+                connection = new Connection(socket.getInputStream(), socket.getOutputStream(), messengerGUIMain);
                 connection.start();
             } catch (IOException ignored) {
             }
