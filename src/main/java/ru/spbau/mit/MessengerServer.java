@@ -7,7 +7,7 @@ import java.net.Socket;
 public class MessengerServer {
     private MessengerGUIMain messengerGUIMain;
     private int port;
-    private Connection connection;
+    private Connection connection = null;
 
     public MessengerServer(int port, MessengerGUIMain messengerGUIMain) {
         this.port = port;
@@ -26,8 +26,11 @@ public class MessengerServer {
         }).start();
     }
 
-    public synchronized void sendMessage(String message) throws IOException {
-        connection.sendMessage(message);
+    public synchronized void sendMessage(String name, String message) throws IOException {
+        if (connection == null) {
+            throw new IOException("No client connected");
+        }
+        connection.sendMessage(name, message);
     }
 
     public synchronized void stop() {

@@ -7,16 +7,12 @@ public class MessengerClient {
     private MessengerGUIMain messengerGUIMain;
     private String host;
     private int port;
-    private Connection connection;
+    private Connection connection = null;
 
     public MessengerClient(String host, int port, MessengerGUIMain messengerGUIMain) {
         this.host = host;
         this.port = port;
         this.messengerGUIMain = messengerGUIMain;
-    }
-
-    public synchronized void sendMessage(String message) throws IOException {
-        connection.sendMessage(message);
     }
 
     public synchronized void start() throws IOException {
@@ -28,6 +24,13 @@ public class MessengerClient {
             } catch (IOException ignored) {
             }
         }).start();
+    }
+
+    public synchronized void sendMessage(String name, String message) throws IOException {
+        if (connection == null) {
+            throw new IOException("Unable to connect to server");
+        }
+        connection.sendMessage(name, message);
     }
 
     public synchronized void stop() {

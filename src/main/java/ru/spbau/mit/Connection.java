@@ -23,8 +23,9 @@ public class Connection {
         while (!isClosed) {
             int query = inputStream.readInt();
             if (query == 1) {
+                String name = inputStream.readUTF();
                 String message = inputStream.readUTF();
-                messengerGUIMain.receiveMessage(message);
+                messengerGUIMain.receiveMessage(name, message);
             } else {
                 isClosed = true;
                 break;
@@ -32,8 +33,9 @@ public class Connection {
         }
     }
 
-    public void sendMessage(String message) throws IOException {
+    public void sendMessage(String name, String message) throws IOException {
         outputStream.writeInt(1);
+        outputStream.writeUTF(name);
         outputStream.writeUTF(message);
         outputStream.flush();
     }

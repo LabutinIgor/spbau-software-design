@@ -21,6 +21,7 @@ public final class MessengerGUIMain {
     private JFrame frame;
     private JTextArea messagesTextArea;
     private JTextArea messageToSendTextArea;
+    private String userName = "Default name";
 
     private MessengerGUIMain() {
     }
@@ -51,14 +52,17 @@ public final class MessengerGUIMain {
     private JMenuBar buildMenuBar() {
         JMenu fileMenu = new JMenu("menu");
 
-        JMenuItem downloadItem = new JMenuItem("start as server");
-        downloadItem.addActionListener(e -> startServer());
-        fileMenu.add(downloadItem);
+        JMenuItem startItem = new JMenuItem("start as server");
+        startItem.addActionListener(e -> startServer());
+        fileMenu.add(startItem);
 
-        JMenuItem uploadItem = new JMenuItem("connect");
-        uploadItem.addActionListener(e -> startClient());
-        fileMenu.add(uploadItem);
+        JMenuItem connectItem = new JMenuItem("connect");
+        connectItem.addActionListener(e -> startClient());
+        fileMenu.add(connectItem);
 
+        JMenuItem setNameItem = new JMenuItem("set name");
+        setNameItem.addActionListener(e -> setName());
+        fileMenu.add(setNameItem);
 
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(fileMenu);
@@ -94,6 +98,14 @@ public final class MessengerGUIMain {
         sendButton.addActionListener(e -> sendMessage());
         panel.add(sendButton);
         return panel;
+    }
+
+    private synchronized void setName() {
+        userName = JOptionPane.showInputDialog(
+                frame,
+                "Enter your name:",
+                "Messenger",
+                JOptionPane.PLAIN_MESSAGE);
     }
 
     private synchronized void startServer() {
@@ -136,22 +148,34 @@ public final class MessengerGUIMain {
 
     private synchronized void sendMessage() {
         String message = messageToSendTextArea.getText();
-        if (server == null) {
+        if (server != null) {
             try {
-                client.sendMessage(message);
-            } catch (IOException ignored) {
+                server.sendMessage(userName, message);
+            } catch (IOException exception) {
+                JOptionPane.showMessageDialog(frame, "Unable to send message");
+                logger.log(Level.WARNING, "Error while sending message from server: ", exception);
+                return;
             }
         } else {
-            try {
-                server.sendMessage(message);
-            } catch (IOException ignored) {
+            if (client != null) {
+                try {
+                    client.sendMessage(userName, message);
+                } catch (IOException exception) {
+                    JOptionPane.showMessageDialog(frame, "Unable to send message");
+                    logger.log(Level.WARNING, "Error while sending message from client: ", exception);
+                    return;
+                }
+            } else {
+                JOptionPane.showMessageDialog(frame, "Please, start server or client before messaging");
+                logger.log(Level.WARNING, "Tried to send message while no client and server is running");
+                return;
             }
         }
         messageToSendTextArea.setText("");
-        messagesTextArea.append(message + "\n");
+        messagesTextArea.append(userName + ":\n" + message + "\n");
     }
 
-    public synchronized void receiveMessage(String message) {
-        messagesTextArea.append(message + "\n");
+    public synchronized void receiveMessage(String senderName, String message) {
+        messagesTextArea.append(senderName + ":\n" + message + "\n");
     }
 }
