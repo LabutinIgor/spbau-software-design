@@ -9,7 +9,9 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-
+/**
+ * The MessengerGUIMain class is view for chatting
+ */
 public final class MessengerGUIMain implements MessagesReceiver {
     private static Logger logger = Logger.getLogger(MessengerGUIMain.class.getName());
 
@@ -26,6 +28,9 @@ public final class MessengerGUIMain implements MessagesReceiver {
     private MessengerGUIMain() {
     }
 
+    /**
+     * This static method starts app
+     */
     public static void main(String[] args) {
         try {
             LogManager.getLogManager().readConfiguration(new FileInputStream("logging.properties"));
@@ -35,6 +40,9 @@ public final class MessengerGUIMain implements MessagesReceiver {
         new MessengerGUIMain().start();
     }
 
+    /**
+     * This method sets up all user interface
+     */
     private void start() {
         frame = new JFrame("Messenger");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -49,6 +57,9 @@ public final class MessengerGUIMain implements MessagesReceiver {
         frame.setVisible(true);
     }
 
+    /**
+     * This method sets up elements of menu bar
+     */
     private JMenuBar buildMenuBar() {
         JMenu fileMenu = new JMenu("menu");
 
@@ -69,6 +80,9 @@ public final class MessengerGUIMain implements MessagesReceiver {
         return menuBar;
     }
 
+    /**
+     * This method sets up main panel of view with text areas and "send" button
+     */
     private JPanel buildPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -100,6 +114,9 @@ public final class MessengerGUIMain implements MessagesReceiver {
         return panel;
     }
 
+    /**
+     * This method is handler for changing user name from menu bar
+     */
     private synchronized void setName() {
         userName = JOptionPane.showInputDialog(
                 frame,
@@ -108,6 +125,9 @@ public final class MessengerGUIMain implements MessagesReceiver {
                 JOptionPane.PLAIN_MESSAGE);
     }
 
+    /**
+     * This method is handler for starting server from menu bar
+     */
     private synchronized void startServer() {
         if (client != null) {
             client.stop();
@@ -124,6 +144,9 @@ public final class MessengerGUIMain implements MessagesReceiver {
         }
     }
 
+    /**
+     * This method is handler for starting client from menu bar
+     */
     private synchronized void startClient() {
         if (client != null) {
             client.stop();
@@ -146,6 +169,9 @@ public final class MessengerGUIMain implements MessagesReceiver {
         }
     }
 
+    /**
+     * This method sends current message to companion
+     */
     private synchronized void sendMessage() {
         String message = messageToSendTextArea.getText();
         if (server != null) {
@@ -175,6 +201,10 @@ public final class MessengerGUIMain implements MessagesReceiver {
         messagesTextArea.append(userName + ":\n" + message + "\n");
     }
 
+    /**
+     * This method handle received messages,
+     * server and client can call only this method of view
+     */
     @Override
     public synchronized void receiveMessage(String senderName, String message) {
         messagesTextArea.append(senderName + ":\n" + message + "\n");
