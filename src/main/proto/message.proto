@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "ru.spbau.mit.proto";
+option java_outer_classname = "MessageProto";
+option objc_class_prefix = "MP";
+
+package ru.spbau.mit.proto;
+
+service Messenger {
+    rpc Chat (stream Message) returns (stream Message) {
+    }
+}
+
+message Message {
+    string content = 1;
+    //string name = 2;
+}
