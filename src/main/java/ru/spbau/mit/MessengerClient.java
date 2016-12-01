@@ -1,16 +1,30 @@
 package ru.spbau.mit;
 
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
+import io.grpc.stub.StreamObserver;
+import ru.spbau.mit.proto.Message;
+import ru.spbau.mit.proto.MessengerGrpc;
+import ru.spbau.mit.proto.Notification;
+
 import java.io.IOException;
-import java.net.Socket;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The MessengerClient class provides realisation of client that can send and receive messages
  */
 public class MessengerClient {
+    private static Logger logger = Logger.getLogger(MessengerClient.class.getName());
+
     private MessagesReceiver messagesReceiver;
     private String host;
     private int port;
-    private Connection connection = null;
+    private ManagedChannel channel;
+    private MessengerGrpc.MessengerStub asyncStub;
+    private StreamObserver<Message> requestObserver;
+    private StreamObserver<Notification> notificationsRequestObserver;
 
     public MessengerClient(String host, int port, MessengerGUIMain messengerGUIMain) {
         this.host = host;
@@ -23,12 +37,43 @@ public class MessengerClient {
      */
     public synchronized void start() throws IOException {
         new Thread(() -> {
-            try {
-                Socket socket = new Socket(host, port);
-                connection = new Connection(socket.getInputStream(), socket.getOutputStream(), messagesReceiver);
-                connection.start();
-            } catch (IOException ignored) {
-            }
+            ManagedChannelBuilder<?> channelBuilder =
+                    ManagedChannelBuilder.forAddress(host, port).usePlaintext(true);
+            channel = channelBuilder.build();
+            asyncStub = MessengerGrpc.newStub(channel);
+
+            requestObserver =
+                    asyncStub.chat(new StreamObserver<Message>() {
+                        @Override
+                        public void onNext(Message message) {
+                            messagesReceiver.receiveMessage(message.getName(), message.getContent());
+                        }
+
+                        @Override
+                        public void onError(Throwable exception) {
+                            logger.log(Level.WARNING, "Error in grpc chat: ", exception);
+                        }
+
+                        @Override
+                        public void onCompleted() {
+                        }
+                    });
+            notificationsRequestObserver =
+                    asyncStub.typingNotifications(new StreamObserver<Notification>() {
+                        @Override
+                        public void onNext(Notification message) {
+                            messagesReceiver.receiveTypingNotification(message.getName());
+                        }
+
+                        @Override
+                        public void onError(Throwable exception) {
+                            logger.log(Level.WARNING, "Error in notifications: ", exception);
+                        }
+
+                        @Override
+                        public void onCompleted() {
+                        }
+                    });
         }).start();
     }
 
@@ -36,16 +81,20 @@ public class MessengerClient {
      * This method sends message to server
      */
     public synchronized void sendMessage(String name, String message) throws IOException {
-        if (connection == null) {
-            throw new IOException("Unable to connect to server");
-        }
-        connection.sendMessage(name, message);
+        requestObserver.onNext(Message.newBuilder().setName(name).setContent(message).build());
+    }
+
+    public synchronized void sendTypingNotification(String name) throws IOException {
+        notificationsRequestObserver.onNext(Notification.newBuilder().setName(name).build());
     }
 
     /**
      * This method stops client
      */
     public synchronized void stop() {
-        connection.stop();
+        try {
+            channel.shutdown().awaitTermination(2, TimeUnit.SECONDS);
+        } catch (InterruptedException ignored) {
+        }
     }
 }
