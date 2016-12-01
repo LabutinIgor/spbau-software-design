@@ -13,6 +13,6 @@ service Messenger {
 }
 
 message Message {
-    string content = 1;
-    //string name = 2;
+    string name = 1;
+    string content = 2;
 }
