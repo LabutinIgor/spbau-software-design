@@ -3,8 +3,12 @@ package ru.spbau.mit;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.*;
+import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -14,7 +18,6 @@ import java.util.logging.Logger;
  */
 public final class MessengerGUIMain implements MessagesReceiver {
     private static Logger logger = Logger.getLogger(MessengerGUIMain.class.getName());
-
     private static final int PORT = 8081;
 
     private static MessengerClient client = null;
@@ -23,7 +26,10 @@ public final class MessengerGUIMain implements MessagesReceiver {
     private JFrame frame;
     private JTextArea messagesTextArea;
     private JTextArea messageToSendTextArea;
+    private JLabel labelTyping;
     private String userName = "Default name";
+    private String lastCompanionName = "";
+    private long lastTypingTime = 0;
 
     private MessengerGUIMain() {
     }
@@ -55,6 +61,19 @@ public final class MessengerGUIMain implements MessagesReceiver {
 
         frame.setSize(800, 600);
         frame.setVisible(true);
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+                           @Override
+                           public void run() {
+                                if (lastTypingTime < System.currentTimeMillis() - 2000) {
+                                    labelTyping.setText(" ");
+                                } else {
+                                    labelTyping.setText(lastCompanionName + " is typing...");
+                                }
+                           }
+                       }, 1000, 1000
+        );
     }
 
     /**
@@ -95,13 +114,31 @@ public final class MessengerGUIMain implements MessagesReceiver {
         scrollPaneMessages.setSize(300, 200);
         panel.add(scrollPaneMessages);
 
-        JLabel labelNewMessage = new JLabel("New message:");
+        labelTyping = new JLabel(" ");
+        panel.add(labelTyping);
 
+        JLabel labelNewMessage = new JLabel("New message:");
         panel.add(labelNewMessage);
 
         messageToSendTextArea = new JTextArea();
         messageToSendTextArea.setSize(200, 50);
         messageToSendTextArea.setBackground(Color.cyan);
+        messageToSendTextArea.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                sendTypingNotification();
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
         ScrollPane scrollPaneMessagesToSend = new ScrollPane();
         scrollPaneMessagesToSend.add(messageToSendTextArea);
         scrollPaneMessagesToSend.setSize(250, 60);
@@ -202,11 +239,42 @@ public final class MessengerGUIMain implements MessagesReceiver {
     }
 
     /**
+     * This method sends typing notification to companion
+     */
+    private void sendTypingNotification() {
+        if (server != null) {
+            try {
+                server.sendTypingNotification(userName);
+            } catch (IOException exception) {
+                JOptionPane.showMessageDialog(frame, "Unable to send message");
+                logger.log(Level.WARNING, "Error while sending message from server: ", exception);
+            }
+        } else {
+            if (client != null) {
+                try {
+                    client.sendTypingNotification(userName);
+                } catch (IOException exception) {
+                    logger.log(Level.WARNING, "Error while sending typing notification: ", exception);
+                }
+            }
+        }
+    }
+
+    /**
      * This method handle received messages,
      * server and client can call only this method of view
      */
     @Override
     public synchronized void receiveMessage(String senderName, String message) {
         messagesTextArea.append(senderName + ":\n" + message + "\n");
+    }
+
+    /**
+     * This method handle typing for notification user about it
+     */
+    @Override
+    public void receiveTypingNotification(String name) {
+        lastCompanionName = name;
+        lastTypingTime = System.currentTimeMillis();
     }
 }

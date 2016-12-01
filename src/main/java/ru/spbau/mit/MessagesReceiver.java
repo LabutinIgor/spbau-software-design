@@ -7,8 +7,13 @@ package ru.spbau.mit;
 public interface MessagesReceiver {
 
     /**
-     * This method handle received messages,
-     * server and client can call only this method of view
+     * This method handle received messages
      */
     void receiveMessage(String name, String message);
+
+    /**
+     * This method handle typing for notification user about it
+     */
+    void receiveTypingNotification(String name);
+
 }

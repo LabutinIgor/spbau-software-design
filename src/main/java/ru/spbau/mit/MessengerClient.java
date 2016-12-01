@@ -5,6 +5,7 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
 import ru.spbau.mit.proto.Message;
 import ru.spbau.mit.proto.MessengerGrpc;
+import ru.spbau.mit.proto.Notification;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -23,6 +24,7 @@ public class MessengerClient {
     private ManagedChannel channel;
     private MessengerGrpc.MessengerStub asyncStub;
     private StreamObserver<Message> requestObserver;
+    private StreamObserver<Notification> notificationsRequestObserver;
 
     public MessengerClient(String host, int port, MessengerGUIMain messengerGUIMain) {
         this.host = host;
@@ -56,6 +58,22 @@ public class MessengerClient {
                         public void onCompleted() {
                         }
                     });
+            notificationsRequestObserver =
+                    asyncStub.typingNotifications(new StreamObserver<Notification>() {
+                        @Override
+                        public void onNext(Notification message) {
+                            messagesReceiver.receiveTypingNotification(message.getName());
+                        }
+
+                        @Override
+                        public void onError(Throwable exception) {
+                            logger.log(Level.WARNING, "Error in notifications: ", exception);
+                        }
+
+                        @Override
+                        public void onCompleted() {
+                        }
+                    });
         }).start();
     }
 
@@ -64,6 +82,10 @@ public class MessengerClient {
      */
     public synchronized void sendMessage(String name, String message) throws IOException {
         requestObserver.onNext(Message.newBuilder().setName(name).setContent(message).build());
+    }
+
+    public synchronized void sendTypingNotification(String name) throws IOException {
+        notificationsRequestObserver.onNext(Notification.newBuilder().setName(name).build());
     }
 
     /**

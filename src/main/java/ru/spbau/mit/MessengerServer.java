@@ -5,6 +5,7 @@ import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
 import ru.spbau.mit.proto.Message;
 import ru.spbau.mit.proto.MessengerGrpc;
+import ru.spbau.mit.proto.Notification;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -20,6 +21,7 @@ public class MessengerServer {
     private int port;
     private Server server;
     private StreamObserver<Message> observer;
+    private StreamObserver<Notification> notificationsObserver;
 
     public MessengerServer(int port, MessengerGUIMain messengerGUIMain) {
         this.port = port;
@@ -54,6 +56,16 @@ public class MessengerServer {
     }
 
     /**
+     * This method sends typing notification to client
+     */
+    public synchronized void sendTypingNotification(String name) throws IOException {
+        if (observer == null) {
+            throw new IOException("No client connected");
+        }
+        notificationsObserver.onNext(Notification.newBuilder().setName(name).build());
+    }
+
+    /**
      * This method stops server
      */
     public synchronized void stop() {
@@ -83,6 +95,28 @@ public class MessengerServer {
                 @Override
                 public void onCompleted() {
                     responseObserver.onCompleted();
+                }
+            };
+        }
+
+        @Override
+        public StreamObserver<Notification> typingNotifications(
+                final StreamObserver<Notification> responseObserver) {
+            return new StreamObserver<Notification>() {
+                @Override
+                public void onNext(Notification notification) {
+                    messagesReceiver.receiveTypingNotification(notification.getName());
+                    notificationsObserver = responseObserver;
+                }
+
+                @Override
+                public void onError(Throwable exception) {
+                    logger.log(Level.WARNING, "Error in grpc service: ", exception);
+                }
+
+                @Override
+                public void onCompleted() {
+                    notificationsObserver.onCompleted();
                 }
             };
         }
