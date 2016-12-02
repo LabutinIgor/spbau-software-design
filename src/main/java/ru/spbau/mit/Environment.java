@@ -9,6 +9,10 @@ import java.util.Map;
  */
 public class Environment {
     private Map<String, String> variables = new HashMap<>();
+    /**
+     * Save current work directory.
+     */
+    private String curDir = ".";
 
     /**
      * This method assigns value to variable
@@ -28,4 +32,18 @@ public class Environment {
         return variables.get(name);
     }
 
+    /**
+     * This method changes current work directory.
+     */
+    public void setCurDir(String newWorkingDir) {
+        curDir = newWorkingDir;
+    }
+
+    /**
+     * This method give a access to the current work directory.
+     */
+
+    public String getCurDir() {
+        return curDir;
+    }
 }
