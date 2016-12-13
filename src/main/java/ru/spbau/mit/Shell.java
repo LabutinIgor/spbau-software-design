@@ -34,6 +34,13 @@ public final class Shell {
         Lexer lexer = new Lexer();
         Parser parser = new Parser();
         Environment environment = new Environment();
+
+        /*
+         Little hack here. User can not set variable starting with `$` sign.
+         We use it here to store cwd in environment without any changes.
+         */
+        environment.assign("$cwd", System.getProperty("user.dir"));
+
         String lastLine = in.nextLine();
         while (!lastLine.equals("exit")) {
             try {

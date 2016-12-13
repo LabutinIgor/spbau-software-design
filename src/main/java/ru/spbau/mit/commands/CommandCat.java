@@ -39,7 +39,14 @@ public class CommandCat implements Command {
             handleOneArgument(is, os);
         } else {
             for (String arg : parameters) {
-                handleOneArgument(new FileInputStream(new File(arg)), os);
+                if (arg.charAt(0) == '/') {
+                    /* user gave absolute path */
+                    handleOneArgument(new FileInputStream(new File(arg)), os);
+                } else {
+                    /* relative path */
+                    final String cwd = environment.getValue("$cwd");
+                    handleOneArgument(new FileInputStream(new File(cwd + "/" + arg)), os);
+                }
             }
         }
     }

@@ -74,7 +74,14 @@ public class CommandGrep implements Command {
             handleOneArgument(pattern, is, os);
         } else {
             for (String arg : parameters.subList(1, parameters.size())) {
-                handleOneArgument(pattern, new FileInputStream(new File(arg)), os);
+                if (arg.charAt(0) == '/') {
+                    /* user gave absolute path */
+                    handleOneArgument(pattern, new FileInputStream(new File(arg)), os);
+                } else {
+                    /* relative path */
+                    final String cwd = environment.getValue("$cwd");
+                    handleOneArgument(pattern, new FileInputStream(new File(cwd + "/" + arg)), os);
+                }
             }
         }
     }
