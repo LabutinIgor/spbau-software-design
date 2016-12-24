@@ -1,9 +1,11 @@
-package ru.spbau.mit;
+package ru.spbau.mit.strategies;
+
+import ru.spbau.mit.*;
 
 public class HumanStrategy implements Strategy {
     private Controller controller;
 
-    HumanStrategy(Controller controller) {
+    public HumanStrategy(Controller controller) {
         this.controller = controller;
     }
 

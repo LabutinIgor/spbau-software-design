@@ -1,16 +1,19 @@
-package ru.spbau.mit;
+package ru.spbau.mit.game_objects;
+
+import ru.spbau.mit.Characteristics;
 
 public class Artifact implements GameObject {
     private Characteristics characteristics;
     private ArtifactType artifactType;
     private boolean enabled = false;
+    private int id;
 
-    Artifact(Characteristics characteristics, ArtifactType artifactType) {
+    public Artifact(Characteristics characteristics, ArtifactType artifactType) {
         this.characteristics = characteristics;
         this.artifactType = artifactType;
     }
 
-    Characteristics apply(Characteristics oldCharacteristics) {
+    public Characteristics apply(Characteristics oldCharacteristics) {
         if (enabled) {
             return new Characteristics(oldCharacteristics.getForce() + characteristics.getForce(),
                     oldCharacteristics.getArmor() + characteristics.getArmor(),
@@ -20,12 +23,20 @@ public class Artifact implements GameObject {
         }
     }
 
-    void setEnabled(boolean enabled) {
+    public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
-    boolean isEnabled() {
+    public boolean isEnabled() {
         return enabled;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public Characteristics getCharacteristics() {

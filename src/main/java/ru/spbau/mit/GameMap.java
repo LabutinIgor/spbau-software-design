@@ -1,5 +1,8 @@
 package ru.spbau.mit;
 
+import ru.spbau.mit.game_objects.EmptyCell;
+import ru.spbau.mit.game_objects.GameObject;
+
 import java.util.Random;
 
 public class GameMap {

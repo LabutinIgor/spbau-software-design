@@ -1,5 +1,10 @@
 package ru.spbau.mit;
 
+import ru.spbau.mit.game_objects.*;
+import ru.spbau.mit.strategies.BotRandomStrategy;
+import ru.spbau.mit.strategies.GuardStrategy;
+import ru.spbau.mit.strategies.HumanStrategy;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,22 +18,65 @@ public class Controller {
     private static final int DEFAULT_CNT_ARTIFACTS = 200;
     private static final int DEFAULT_WIDTH = 100;
     private static final int DEFAULT_HEIGHT = 30;
+    private static final String DEFAULT_MAP_FILENAME = "maps/map_00.txt";
 
     private UIMain uiMain;
     private int cntBots;
     private int cntArtifacts;
     private GameMap gameMap;
     private Player player;
-    private List<Player> bots = new ArrayList<>();
+    private List<Player> bots;
+    private String mapFileName;
 
     public static void main(String[] args) throws IOException {
-        new Controller().start();
+        Controller controller = new Controller(args);
+        controller.setUpUI();
+        controller.start();
     }
 
-    private void start() {
+    public Controller(String[] args) {
+        if (args.length == 0) {
+            mapFileName = DEFAULT_MAP_FILENAME;
+        } else {
+            mapFileName = args[0];
+        }
+    }
+
+    private void setUpUI() {
         uiMain = new UIMain();
+    }
+
+    public void start() {
+        while (true) {
+            initializeMap();
+            runGame();
+            uiMain.waitUntilRestartPressed();
+        }
+    }
+
+    private void runGame() {
+        while (true) {
+            uiMain.draw(gameMap, player);
+            player.makeMove(gameMap);
+            bots = bots.stream().filter(Player::isAlive).collect(Collectors.toList());
+            for (int i = 0; i < bots.size(); i++) {
+                bots.get(i).makeMove(gameMap);
+            }
+            if (bots.size() == 0) {
+                uiMain.drawWin();
+                break;
+            }
+            if (!player.isAlive()) {
+                uiMain.drawLoose();
+                break;
+            }
+        }
+    }
+
+    private void initializeMap() {
+        bots = new ArrayList<>();
         try {
-            loadMap("maps/map_00.txt");
+            loadMap(mapFileName);
         } catch (IOException exception) {
             gameMap = new GameMap(DEFAULT_WIDTH, DEFAULT_HEIGHT);
             cntBots = DEFAULT_CNT_BOTS;
@@ -36,11 +84,10 @@ public class Controller {
         }
 
         player = new Player(new HumanStrategy(this),
-                new Characteristics(20, 5, 100), gameMap.getRandomFreePosition());
+                new Characteristics(10, 0, 100), gameMap.getRandomFreePosition());
         gameMap.setObject(player.getPosition(), player);
-
         for (int i = 0; i < cntBots; i++) {
-            Player bot = new Player(new BotStrategy(),
+            Player bot = new Player(new BotRandomStrategy(),
                     new Characteristics(10, 0, 100), gameMap.getRandomFreePosition());
             bots.add(bot);
             gameMap.setObject(bot.getPosition(), bot);
@@ -65,20 +112,25 @@ public class Controller {
             }
             gameMap.setObject(gameMap.getRandomFreePosition(), artifact);
         }
-
-        while (player.isAlive()) {
-            uiMain.draw(gameMap, player);
-
-            player.makeMove(gameMap);
-            bots = bots.stream().filter(Player::isAlive).collect(Collectors.toList());
-            for (int i = 0; i < bots.size(); i++) {
-                bots.get(i).makeMove(gameMap);
-            }
-        }
     }
 
     public Direction getDirectionForHuman() {
-        return uiMain.getDirectionFromKeyboard();
+        while (true) {
+            char c = uiMain.getPressedKey();
+            switch (c) {
+                case 'a':
+                    return Direction.LEFT;
+                case 's':
+                    return Direction.DOWN;
+                case 'd':
+                    return Direction.RIGHT;
+                case 'w':
+                    return Direction.UP;
+                default:
+                    player.getInventory().changeArtifactState(c - '0');
+                    uiMain.draw(gameMap, player);
+            }
+        }
     }
 
     private void loadMap(String fileName) throws IOException {
@@ -96,16 +148,22 @@ public class Controller {
             }
             for (int j = 0; j < width; j++) {
                 char cellType = line.charAt(j);
+                Position position = new Position(i, j);
                 switch (cellType) {
                     case '.':
-                        gameMap.setObject(new Position(i, j), new EmptyCell());
+                        gameMap.setObject(position, new EmptyCell());
                         break;
                     case '#':
-                        gameMap.setObject(new Position(i, j), new Wall());
+                        gameMap.setObject(position, new Wall());
                         break;
                     case 'A':
-                        gameMap.setObject(new Position(i, j),
+                        gameMap.setObject(position,
                                 new Artifact(new Characteristics(20, 20, 100), ArtifactType.GENERAL));
+                        break;
+                    case 'G':
+                        Player bot = new Player(new GuardStrategy(), new Characteristics(10, 0, 100), position);
+                        bots.add(bot);
+                        gameMap.setObject(position, bot);
                 }
             }
         }

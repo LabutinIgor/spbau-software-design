@@ -1,8 +1,10 @@
-package ru.spbau.mit;
+package ru.spbau.mit.strategies;
+
+import ru.spbau.mit.*;
 
 import java.util.Random;
 
-public class BotStrategy implements Strategy {
+public class BotRandomStrategy implements Strategy {
     @Override
     public Direction getMoveDirection(Characteristics characteristics, Inventory inventory,
                                       Position position, GameMap gameMap) {

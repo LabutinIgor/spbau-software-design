@@ -15,16 +15,8 @@ public class Characteristics {
         return force;
     }
 
-    public void setForce(int force) {
-        this.force = force;
-    }
-
     public int getArmor() {
         return armor;
-    }
-
-    public void setArmor(int armor) {
-        this.armor = armor;
     }
 
     public int getLife() {

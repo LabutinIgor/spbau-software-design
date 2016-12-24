@@ -1,5 +1,8 @@
 package ru.spbau.mit;
 
+import ru.spbau.mit.game_objects.Artifact;
+import ru.spbau.mit.game_objects.Player;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -10,10 +13,11 @@ import java.util.List;
 public class UIMain {
     private static final Object monitor = new Object();
 
+    private boolean restartPressed;
     private JFrame frame;
     private JPanel panel;
     private JTextArea textArea;
-    private Direction lastDirection = Direction.STAY;
+    private char lastKey;
 
     UIMain() {
         frame = new JFrame();
@@ -36,27 +40,13 @@ public class UIMain {
             public void keyPressed(KeyEvent e) {
                 synchronized (monitor) {
                     char c = e.getKeyChar();
-                    switch (c) {
-                        case 'a':
-                            lastDirection = Direction.LEFT;
-                            monitor.notify();
-                            break;
-                        case 's':
-                            lastDirection = Direction.DOWN;
-                            monitor.notify();
-                            break;
-                        case 'd':
-                            lastDirection = Direction.RIGHT;
-                            monitor.notify();
-                            break;
-                        case 'w':
-                            lastDirection = Direction.UP;
-                            monitor.notify();
-                            break;
-                        default:
-                            if (c >= '0' && c <= '9') {
-                                //inventoryActionsQueue.add((int) c);
-                            }
+                    if (c == 'a' || c == 's' || c == 'w' || c == 'd' || (c >= '1' && c <= '9')) {
+                        lastKey = c;
+                        monitor.notify();
+                    }
+                    if (c == 'g') {
+                        restartPressed = true;
+                        monitor.notify();
                     }
                 }
             }
@@ -68,21 +58,33 @@ public class UIMain {
         });
 
         frame.setSize(1000, 800);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
 
-    public Direction getDirectionFromKeyboard() {
+    public char getPressedKey() {
         synchronized (monitor) {
-            while (lastDirection.equals(Direction.STAY)) {
+            lastKey = 0;
+            while (lastKey == 0) {
                 try {
                     monitor.wait();
                 } catch (InterruptedException e) {
                     break;
                 }
             }
-            Direction direction = lastDirection;
-            lastDirection = Direction.STAY;
-            return direction;
+            return lastKey;
+        }
+    }
+
+    public void waitUntilRestartPressed() {
+        restartPressed = false;
+        synchronized (monitor) {
+            while (!restartPressed) {
+                try {
+                    monitor.wait();
+                } catch (InterruptedException ignored) {
+                }
+            }
         }
     }
 
@@ -127,15 +129,26 @@ public class UIMain {
         textArea.setText(text);
     }
 
+    public void drawWin() {
+        String text = "You win :)\n";
+        text += "Press g to start new game";
+        textArea.setText(text);
+    }
+
+    public void drawLoose() {
+        String text = "You loose :(\n";
+        text += "Press g to start new game";
+        textArea.setText(text);
+    }
+
     private String getCharacteristicsText(List<Artifact> artifacts) {
         String text = "";
-        for (int i = 0; i < artifacts.size(); i++) {
-            Characteristics characteristics = artifacts.get(i).getCharacteristics();
-            text += "ID: " + i + " FORCE: " + characteristics.getForce() + " ARMOR: " + characteristics.getArmor()
+        for (Artifact artifact : artifacts) {
+            Characteristics characteristics = artifact.getCharacteristics();
+            text += "ID: " + artifact.getId() + " ACTIVE:" + artifact.isEnabled()
+                    + " FORCE: " + characteristics.getForce() + " ARMOR: " + characteristics.getArmor()
                     + " HP: " + characteristics.getLife() + "\n";
         }
         return text;
     }
 }
-
-
