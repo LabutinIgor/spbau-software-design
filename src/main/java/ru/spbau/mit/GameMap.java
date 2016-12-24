@@ -17,7 +17,7 @@ public class GameMap {
         return height;
     }
 
-    GameObject objects[][];
+    private GameObject[][] objects;
 
     public GameMap(int width, int height) {
         this.width = width;

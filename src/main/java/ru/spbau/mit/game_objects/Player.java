@@ -33,8 +33,8 @@ public class Player implements GameObject {
             return;
         }
         Position newPosition = new Position(position, direction);
-        if (newPosition.getX() < 0 || newPosition.getX() >= gameMap.getHeight() ||
-                newPosition.getY() < 0 || newPosition.getY() >= gameMap.getWidth()) {
+        if (newPosition.getX() < 0 || newPosition.getX() >= gameMap.getHeight()
+                || newPosition.getY() < 0 || newPosition.getY() >= gameMap.getWidth()) {
             return;
         }
 

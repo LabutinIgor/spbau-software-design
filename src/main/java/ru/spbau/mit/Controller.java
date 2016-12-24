@@ -150,9 +150,6 @@ public class Controller {
                 char cellType = line.charAt(j);
                 Position position = new Position(i, j);
                 switch (cellType) {
-                    case '.':
-                        gameMap.setObject(position, new EmptyCell());
-                        break;
                     case '#':
                         gameMap.setObject(position, new Wall());
                         break;
@@ -164,6 +161,10 @@ public class Controller {
                         Player bot = new Player(new GuardStrategy(), new Characteristics(10, 0, 100), position);
                         bots.add(bot);
                         gameMap.setObject(position, bot);
+                        break;
+                    default:
+                        gameMap.setObject(position, new EmptyCell());
+                        break;
                 }
             }
         }

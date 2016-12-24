@@ -24,6 +24,8 @@ public class Position {
                 break;
             case RIGHT:
                 y++;
+                break;
+            default:
         }
     }
 

@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.List;
 
 public class UIMain {
-    private static final Object monitor = new Object();
+    private static final Object MONITOR = new Object();
 
     private boolean restartPressed;
     private JFrame frame;
@@ -38,15 +38,15 @@ public class UIMain {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                synchronized (monitor) {
+                synchronized (MONITOR) {
                     char c = e.getKeyChar();
                     if (c == 'a' || c == 's' || c == 'w' || c == 'd' || (c >= '1' && c <= '9')) {
                         lastKey = c;
-                        monitor.notify();
+                        MONITOR.notify();
                     }
                     if (c == 'g') {
                         restartPressed = true;
-                        monitor.notify();
+                        MONITOR.notify();
                     }
                 }
             }
@@ -63,11 +63,11 @@ public class UIMain {
     }
 
     public char getPressedKey() {
-        synchronized (monitor) {
+        synchronized (MONITOR) {
             lastKey = 0;
             while (lastKey == 0) {
                 try {
-                    monitor.wait();
+                    MONITOR.wait();
                 } catch (InterruptedException e) {
                     break;
                 }
@@ -78,10 +78,10 @@ public class UIMain {
 
     public void waitUntilRestartPressed() {
         restartPressed = false;
-        synchronized (monitor) {
+        synchronized (MONITOR) {
             while (!restartPressed) {
                 try {
-                    monitor.wait();
+                    MONITOR.wait();
                 } catch (InterruptedException ignored) {
                 }
             }
@@ -117,6 +117,8 @@ public class UIMain {
                     break;
                 case GENERAL:
                     others.add(artifact);
+                    break;
+                default:
             }
         }
         text += "SWORDS:\n";
