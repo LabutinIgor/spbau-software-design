@@ -5,6 +5,9 @@ import ru.spbau.mit.game_objects.GameObject;
 
 import java.util.Random;
 
+/**
+ * The GameMap class represents map with objects placed in it
+ */
 public class GameMap {
     private int width;
     private int height;
@@ -19,6 +22,9 @@ public class GameMap {
 
     private GameObject[][] objects;
 
+    /**
+     * This constructor initializes size of map and sets all cells to empty
+     */
     public GameMap(int width, int height) {
         this.width = width;
         this.height = height;
@@ -38,6 +44,9 @@ public class GameMap {
         objects[position.getX()][position.getY()] = object;
     }
 
+    /**
+     * This method gets random empty cell of map
+     */
     public Position getRandomFreePosition() {
         Random random = new Random();
         int x;

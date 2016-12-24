@@ -2,6 +2,11 @@ package ru.spbau.mit.game_objects;
 
 import ru.spbau.mit.Characteristics;
 
+/**
+ * The Artifact class represents artifact object,
+ * it has characteristics which artifact adds to players characteristics,
+ * each artifact has a type, at one time it can be no more than one active artifact of each type
+ */
 public class Artifact implements GameObject {
     private Characteristics characteristics;
     private ArtifactType artifactType;
@@ -13,6 +18,9 @@ public class Artifact implements GameObject {
         this.artifactType = artifactType;
     }
 
+    /**
+     * This method applies artifact to given characteristics
+     */
     public Characteristics apply(Characteristics oldCharacteristics) {
         if (enabled) {
             return new Characteristics(oldCharacteristics.getForce() + characteristics.getForce(),
@@ -47,6 +55,9 @@ public class Artifact implements GameObject {
         return artifactType;
     }
 
+    /**
+     * This method gets symbol for this object
+     */
     @Override
     public char getSymbol() {
         return 'A';

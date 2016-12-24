@@ -3,6 +3,11 @@ package ru.spbau.mit.game_objects;
 import ru.spbau.mit.*;
 import ru.spbau.mit.strategies.Strategy;
 
+/**
+ * The Player class represents player,
+ * it has characteristics, inventory and
+ * can make move with some strategy
+ */
 public class Player implements GameObject {
     private Strategy strategy;
     private Characteristics characteristics;
@@ -21,12 +26,18 @@ public class Player implements GameObject {
         return position;
     }
 
+    /**
+     * This constructor initializes all fields needed for player
+     */
     public Player(Strategy strategy, Characteristics characteristics, Position position) {
         this.strategy = strategy;
         this.characteristics = characteristics;
         this.position = position;
     }
 
+    /**
+     * This method makes one move using strategy
+     */
     public void makeMove(GameMap gameMap) {
         Direction direction = strategy.getMoveDirection(characteristics, inventory, position, gameMap);
         if (direction == Direction.STAY) {
@@ -62,24 +73,39 @@ public class Player implements GameObject {
         }
     }
 
-    private void haveDamage(int damage) {
-        characteristics.setLife(characteristics.getLife() - Math.max(1, damage - characteristics.getArmor()));
+    /**
+     * This method makes damage from hit of given force
+     */
+    private void haveDamage(int force) {
+        characteristics.setLife(characteristics.getLife() - Math.max(1, force - characteristics.getArmor()));
     }
 
+    /**
+     * This method add given number to life of player
+     */
     private void cure(int life) {
         characteristics.setLife(characteristics.getLife() + life);
     }
 
+    /**
+     * This method moves player to given position
+     */
     private void moveToCell(Position newPosition, GameMap gameMap) {
         gameMap.setObject(newPosition, this);
         gameMap.setObject(position, new EmptyCell());
         position = newPosition;
     }
 
+    /**
+     * This method returns is player alive
+     */
     public boolean isAlive() {
         return inventory.apply(characteristics).getLife() > 0;
     }
 
+    /**
+     * This method gets symbol for player
+     */
     @Override
     public char getSymbol() {
         return strategy.getSymbol();

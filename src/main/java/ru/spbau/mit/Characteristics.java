@@ -1,10 +1,16 @@
 package ru.spbau.mit;
 
+/**
+ * The Characteristics class describes characteristics of player
+ */
 public class Characteristics {
     private int force;
     private int armor;
     private int life;
 
+    /**
+     * This constructor initializes characteristics with given values
+     */
     public Characteristics(int force, int armor, int life) {
         this.force = force;
         this.armor = armor;

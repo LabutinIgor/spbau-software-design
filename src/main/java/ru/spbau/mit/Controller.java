@@ -13,6 +13,11 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+/**
+ * The Controller class is starting class of game,
+ * it loads map, initializes it with additional random bots and artifacts
+ * and starts game by calling start method of Game object
+ */
 public class Controller {
     private static final int DEFAULT_CNT_BOTS = 100;
     private static final int DEFAULT_CNT_ARTIFACTS = 200;
@@ -28,12 +33,17 @@ public class Controller {
     private List<Player> bots;
     private String mapFileName;
 
+    /**
+     * This static method starts application
+     */
     public static void main(String[] args) throws IOException {
-        Controller controller = new Controller(args);
-        controller.setUpUI();
-        controller.start();
+        new Controller(args).start();
     }
 
+    /**
+     * This constructor initializes map name with given argument,
+     * or with default name if there is no argument
+     */
     public Controller(String[] args) {
         if (args.length == 0) {
             mapFileName = DEFAULT_MAP_FILENAME;
@@ -42,37 +52,23 @@ public class Controller {
         }
     }
 
-    private void setUpUI() {
+    /**
+     * This method sets up UI class and run games in infinite cycle
+     */
+    private void start() {
         uiMain = new UIMain();
-    }
-
-    public void start() {
         while (true) {
             initializeMap();
-            runGame();
+            Game game = new Game(uiMain, gameMap, player, bots);
+            game.start();
             uiMain.waitUntilRestartPressed();
         }
     }
 
-    private void runGame() {
-        while (true) {
-            uiMain.draw(gameMap, player);
-            player.makeMove(gameMap);
-            bots = bots.stream().filter(Player::isAlive).collect(Collectors.toList());
-            for (int i = 0; i < bots.size(); i++) {
-                bots.get(i).makeMove(gameMap);
-            }
-            if (bots.size() == 0) {
-                uiMain.drawWin();
-                break;
-            }
-            if (!player.isAlive()) {
-                uiMain.drawLoose();
-                break;
-            }
-        }
-    }
-
+    /**
+     * This method initializes map from file
+     * or with default values if file is invalid
+     */
     private void initializeMap() {
         bots = new ArrayList<>();
         try {
@@ -114,7 +110,12 @@ public class Controller {
         }
     }
 
-    public Direction getDirectionForHuman() {
+    /**
+     * This method gets user keyboard actions from ui,
+     * updates players inventory while inventory keys pressed
+     * and returns direction when it pressed
+     */
+    public Direction updateInventoryAndGetDirection() {
         while (true) {
             char c = uiMain.getPressedKey();
             switch (c) {
@@ -133,6 +134,9 @@ public class Controller {
         }
     }
 
+    /**
+     * This method loads map from file
+     */
     private void loadMap(String fileName) throws IOException {
         Scanner in = new Scanner(new File(fileName));
         int width = in.nextInt();

@@ -10,6 +10,9 @@ import java.awt.event.KeyListener;
 import java.util.*;
 import java.util.List;
 
+/**
+ * The UIMain class is class for drawing ui and interaction with player by keyboard
+ */
 public class UIMain {
     private static final Object MONITOR = new Object();
 
@@ -19,6 +22,9 @@ public class UIMain {
     private JTextArea textArea;
     private char lastKey;
 
+    /**
+     * This constructor initializes frame and sets up key listener
+     */
     UIMain() {
         frame = new JFrame();
         panel = new JPanel();
@@ -62,6 +68,9 @@ public class UIMain {
         frame.setVisible(true);
     }
 
+    /**
+     * This method returns last pressed key
+     */
     public char getPressedKey() {
         synchronized (MONITOR) {
             lastKey = 0;
@@ -76,6 +85,9 @@ public class UIMain {
         }
     }
 
+    /**
+     * This method waits until player pressed key to start new game
+     */
     public void waitUntilRestartPressed() {
         restartPressed = false;
         synchronized (MONITOR) {
@@ -88,6 +100,9 @@ public class UIMain {
         }
     }
 
+    /**
+     * This method draws ui
+     */
     public void draw(GameMap gameMap, Player player) {
         String text = "";
         for (int i = 0; i < gameMap.getHeight(); i++) {
@@ -131,18 +146,27 @@ public class UIMain {
         textArea.setText(text);
     }
 
+    /**
+     * This method draws winning message
+     */
     public void drawWin() {
         String text = "You win :)\n";
         text += "Press g to start new game";
         textArea.setText(text);
     }
 
+    /**
+     * This method draws loosing message
+     */
     public void drawLoose() {
         String text = "You loose :(\n";
         text += "Press g to start new game";
         textArea.setText(text);
     }
 
+    /**
+     * This method returns text describing given artifacts
+     */
     private String getCharacteristicsText(List<Artifact> artifacts) {
         String text = "";
         for (Artifact artifact : artifacts) {
