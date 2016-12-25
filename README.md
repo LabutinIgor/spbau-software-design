@@ -1,4 +1,4 @@
-## Rolls
+## Rules
 Player is shown as '@'
 Artifact is shown as 'A'
 There are 4 types of artifact: sward, armor, general and medicine.
@@ -15,4 +15,4 @@ If you tries to move to the cell with bot, you hit him.
 Your goal is to kill all bots.
 
 ## Diagram
-![](diagram.png)
+![](diagram/diagram.png)
