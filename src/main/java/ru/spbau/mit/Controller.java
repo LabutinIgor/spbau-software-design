@@ -4,6 +4,8 @@ import ru.spbau.mit.game_objects.*;
 import ru.spbau.mit.strategies.BotRandomStrategy;
 import ru.spbau.mit.strategies.GuardStrategy;
 import ru.spbau.mit.strategies.HumanStrategy;
+import ru.spbau.mit.view.RoguelikeUI;
+import ru.spbau.mit.view.UIMain;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,7 +32,7 @@ public class Controller {
     private static final int DEFAULT_HEIGHT = 30;
     private static final String DEFAULT_MAP_PREFIX = "maps/map_";
 
-    private UIMain uiMain;
+    private RoguelikeUI uiMain;
     private int cntBots;
     private int cntArtifacts;
     private GameMap gameMap;

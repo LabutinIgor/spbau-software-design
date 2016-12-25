@@ -1,6 +1,8 @@
 package ru.spbau.mit;
 
 import ru.spbau.mit.game_objects.Player;
+import ru.spbau.mit.view.RoguelikeUI;
+import ru.spbau.mit.view.UIMain;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,7 +11,7 @@ import java.util.stream.Collectors;
  * The Game class is class for running one game
  */
 public class Game {
-    private UIMain uiMain;
+    private RoguelikeUI uiMain;
     private GameMap gameMap;
     private Player player;
     private List<Player> bots;
@@ -18,7 +20,7 @@ public class Game {
     /**
      * This constructor initializes all fields needed for running game
      */
-    public Game(UIMain uiMain, GameMap gameMap, Player player, List<Player> bots) {
+    public Game(RoguelikeUI uiMain, GameMap gameMap, Player player, List<Player> bots) {
         this.uiMain = uiMain;
         this.gameMap = gameMap;
         this.player = player;

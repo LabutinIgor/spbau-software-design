@@ -1,5 +1,9 @@
-package ru.spbau.mit;
+package ru.spbau.mit.view;
 
+import ru.spbau.mit.Characteristics;
+import ru.spbau.mit.GameMap;
+import ru.spbau.mit.Inventory;
+import ru.spbau.mit.Position;
 import ru.spbau.mit.game_objects.Artifact;
 import ru.spbau.mit.game_objects.Player;
 
@@ -13,7 +17,7 @@ import java.util.List;
 /**
  * The UIMain class is class for drawing ui and interaction with player by keyboard
  */
-public class UIMain {
+public class UIMain implements RoguelikeUI {
     private static final Object MONITOR = new Object();
 
     private boolean restartPressed;
@@ -25,7 +29,7 @@ public class UIMain {
     /**
      * This constructor initializes frame and sets up key listener
      */
-    UIMain() {
+    public UIMain() {
         frame = new JFrame();
         panel = new JPanel();
         textArea = new JTextArea();
@@ -71,6 +75,7 @@ public class UIMain {
     /**
      * This method returns last pressed key
      */
+    @Override
     public char getPressedKey() {
         synchronized (MONITOR) {
             lastKey = 0;
@@ -88,6 +93,7 @@ public class UIMain {
     /**
      * This method waits until player pressed key to start new game
      */
+    @Override
     public void waitUntilRestartPressed() {
         restartPressed = false;
         synchronized (MONITOR) {
@@ -103,6 +109,7 @@ public class UIMain {
     /**
      * This method draws ui
      */
+    @Override
     public void draw(GameMap gameMap, Player player) {
         String text = "";
         for (int i = 0; i < gameMap.getHeight(); i++) {
@@ -149,6 +156,7 @@ public class UIMain {
     /**
      * This method draws winning message
      */
+    @Override
     public void drawWin() {
         String text = "You win :)\n";
         text += "Press g to start new game";
@@ -158,6 +166,7 @@ public class UIMain {
     /**
      * This method draws loosing message
      */
+    @Override
     public void drawLoose() {
         String text = "You loose :(\n";
         text += "Press g to start new game";
