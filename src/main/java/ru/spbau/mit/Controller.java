@@ -6,12 +6,15 @@ import ru.spbau.mit.strategies.GuardStrategy;
 import ru.spbau.mit.strategies.HumanStrategy;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.stream.Collectors;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 /**
  * The Controller class is starting class of game,
@@ -19,11 +22,13 @@ import java.util.stream.Collectors;
  * and starts game by calling start method of Game object
  */
 public class Controller {
+    private static Logger logger = Logger.getLogger(Controller.class.getName());
+
     private static final int DEFAULT_CNT_BOTS = 100;
     private static final int DEFAULT_CNT_ARTIFACTS = 200;
     private static final int DEFAULT_WIDTH = 100;
     private static final int DEFAULT_HEIGHT = 30;
-    private static final String DEFAULT_MAP_FILENAME = "maps/map_00.txt";
+    private static final String DEFAULT_MAP_PREFIX = "maps/map_";
 
     private UIMain uiMain;
     private int cntBots;
@@ -32,22 +37,28 @@ public class Controller {
     private Player player;
     private List<Player> bots;
     private String mapFileName;
+    private boolean isMapFromArgument = false;
+    private int currentMap = 0;
 
     /**
      * This static method starts application
      */
     public static void main(String[] args) throws IOException {
+        try {
+            LogManager.getLogManager().readConfiguration(new FileInputStream("logging.properties"));
+        } catch (IOException exception) {
+            System.err.println("Could not setup logger configuration: " + exception.toString());
+        }
         new Controller(args).start();
     }
 
     /**
      * This constructor initializes map name with given argument,
-     * or with default name if there is no argument
+     * or with default first map, then when you win mup wil change to next
      */
     public Controller(String[] args) {
-        if (args.length == 0) {
-            mapFileName = DEFAULT_MAP_FILENAME;
-        } else {
+        if (args.length > 0) {
+            isMapFromArgument = true;
             mapFileName = args[0];
         }
     }
@@ -58,10 +69,17 @@ public class Controller {
     private void start() {
         uiMain = new UIMain();
         while (true) {
+            logger.log(Level.INFO, "new game started");
+            if (!isMapFromArgument) {
+                mapFileName = DEFAULT_MAP_PREFIX + currentMap + ".txt";
+            }
             initializeMap();
             Game game = new Game(uiMain, gameMap, player, bots);
             game.start();
             uiMain.waitUntilRestartPressed();
+            if (game.getIsHumanWin()) {
+                currentMap++;
+            }
         }
     }
 
@@ -74,6 +92,7 @@ public class Controller {
         try {
             loadMap(mapFileName);
         } catch (IOException exception) {
+            logger.log(Level.WARNING, "can't load map", exception);
             gameMap = new GameMap(DEFAULT_WIDTH, DEFAULT_HEIGHT);
             cntBots = DEFAULT_CNT_BOTS;
             cntArtifacts = DEFAULT_CNT_ARTIFACTS;
@@ -96,15 +115,15 @@ public class Controller {
             switch (artifactType) {
                 case 0:
                     artifact = new Artifact(
-                            new Characteristics(random.nextInt(20) + 1, 0, 0), ArtifactType.SWORD);
+                            new Characteristics(random.nextInt(10) + 1, 0, 0), ArtifactType.SWORD);
                     break;
                 case 1:
                     artifact = new Artifact(
-                            new Characteristics(0, random.nextInt(20) + 1, 0), ArtifactType.ARMOR);
+                            new Characteristics(0, random.nextInt(10) + 1, 0), ArtifactType.ARMOR);
                     break;
                 default:
                     artifact = new Artifact(
-                            new Characteristics(0, 0, random.nextInt(20) + 1), ArtifactType.MEDICINE);
+                            new Characteristics(0, 0, random.nextInt(40) + 1), ArtifactType.MEDICINE);
             }
             gameMap.setObject(gameMap.getRandomFreePosition(), artifact);
         }
@@ -161,8 +180,25 @@ public class Controller {
                         gameMap.setObject(position,
                                 new Artifact(new Characteristics(20, 20, 100), ArtifactType.GENERAL));
                         break;
+                    case 'S':
+                        gameMap.setObject(position,
+                                new Artifact(new Characteristics(10, 0, 0), ArtifactType.SWORD));
+                        break;
+                    case 'D':
+                        gameMap.setObject(position,
+                                new Artifact(new Characteristics(0, 10, 0), ArtifactType.ARMOR));
+                        break;
+                    case '+':
+                        gameMap.setObject(position,
+                                new Artifact(new Characteristics(0, 0, 40), ArtifactType.MEDICINE));
+                        break;
+                    case 'B':
+                        Player bot = new Player(new BotRandomStrategy(), new Characteristics(15, 0, 100), position);
+                        bots.add(bot);
+                        gameMap.setObject(position, bot);
+                        break;
                     case 'G':
-                        Player bot = new Player(new GuardStrategy(), new Characteristics(10, 0, 100), position);
+                        bot = new Player(new GuardStrategy(), new Characteristics(15, 0, 100), position);
                         bots.add(bot);
                         gameMap.setObject(position, bot);
                         break;

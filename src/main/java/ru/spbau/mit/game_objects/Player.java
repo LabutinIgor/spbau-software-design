@@ -77,7 +77,9 @@ public class Player implements GameObject {
      * This method makes damage from hit of given force
      */
     private void haveDamage(int force) {
-        characteristics.setLife(characteristics.getLife() - Math.max(1, force - characteristics.getArmor()));
+        Characteristics characteristicsWithInventory = inventory.apply(characteristics);
+        characteristics.setLife(characteristics.getLife()
+                - Math.max(1, force - characteristicsWithInventory.getArmor()));
     }
 
     /**

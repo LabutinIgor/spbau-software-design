@@ -13,6 +13,7 @@ public class Game {
     private GameMap gameMap;
     private Player player;
     private List<Player> bots;
+    private boolean isHumanWin = false;
 
     /**
      * This constructor initializes all fields needed for running game
@@ -37,6 +38,7 @@ public class Game {
                 bot.makeMove(gameMap);
             }
             if (bots.size() == 0) {
+                isHumanWin = true;
                 uiMain.drawWin();
                 break;
             }
@@ -45,5 +47,9 @@ public class Game {
                 break;
             }
         }
+    }
+
+    public boolean getIsHumanWin() {
+        return isHumanWin;
     }
 }
