@@ -2,8 +2,6 @@ package ru.spbau.mit;
 
 import ru.spbau.mit.game_objects.Player;
 import ru.spbau.mit.view.RoguelikeUI;
-import ru.spbau.mit.view.UIMain;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,11 +39,9 @@ public class Game {
             }
             if (bots.size() == 0) {
                 isHumanWin = true;
-                uiMain.drawWin();
                 break;
             }
             if (!player.isAlive()) {
-                uiMain.drawLoose();
                 break;
             }
         }

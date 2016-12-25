@@ -78,10 +78,13 @@ public class Controller {
             initializeMap();
             Game game = new Game(uiMain, gameMap, player, bots);
             game.start();
-            uiMain.waitUntilRestartPressed();
             if (game.getIsHumanWin()) {
+                uiMain.drawWin();
                 currentMap++;
+            } else {
+                uiMain.drawLoose();
             }
+            uiMain.waitUntilRestartPressed();
         }
     }
 
@@ -192,10 +195,11 @@ public class Controller {
                         break;
                     case '+':
                         gameMap.setObject(position,
-                                new Artifact(new Characteristics(0, 0, 40), ArtifactType.MEDICINE));
+                                new Artifact(new Characteristics(0, 0, 50), ArtifactType.MEDICINE));
                         break;
                     case 'B':
-                        Player bot = new Player(new BotRandomStrategy(), new Characteristics(15, 0, 100), position);
+                        Player bot = new Player(new BotRandomStrategy(),
+                                new Characteristics(15, 0, 100), position);
                         bots.add(bot);
                         gameMap.setObject(position, bot);
                         break;
