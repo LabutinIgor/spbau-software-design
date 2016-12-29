@@ -9,6 +9,10 @@ import java.util.Map;
  */
 public class Environment {
     private Map<String, String> variables = new HashMap<>();
+    public static final String CURRENT_DIR = "DIR";
+    public Environment() {
+        assign(CURRENT_DIR, System.getProperty("user.dir"));
+    }
 
     /**
      * This method assigns value to variable
