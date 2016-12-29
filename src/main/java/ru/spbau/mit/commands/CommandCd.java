@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by YuryKravchenko on 29/12/2016.
@@ -34,9 +33,9 @@ public class CommandCd implements Command {
         }
         File dir = new File(environment.getValue(Environment.CURRENT_DIR) + "/" + parameters.get(0));
         if (dir.isDirectory()) {
-            environment.assign(Environment.CURRENT_DIR, environment.getValue(Environment.CURRENT_DIR) + "/" + parameters.get(0));
-        }
-        else {
+            environment.assign(Environment.CURRENT_DIR,
+                    environment.getValue(Environment.CURRENT_DIR) + "/" + parameters.get(0));
+        } else {
             throw new IOException(parameters.get(0) + ": No such file or directory");
         }
     }

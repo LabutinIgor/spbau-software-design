@@ -4,7 +4,6 @@ import com.beust.jcommander.Parameter;
 import ru.spbau.mit.Environment;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,8 +22,7 @@ public class CommandLs implements Command {
         File dir;
         if (parameters.size() == 0) {
             dir = new File(environment.getValue(Environment.CURRENT_DIR));
-        }
-        else {
+        } else {
             dir = new File(environment.getValue(Environment.CURRENT_DIR) + "/" + parameters.get(0));
         }
         Arrays.stream(dir.listFiles()).forEach(file -> out.println(file.getName()));
