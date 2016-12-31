@@ -11,13 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by YuryKravchenko on 29/12/2016.
+ * эта команда позволяет менять текущую директорию
  */
 public class CommandCd implements Command {
-
     @Parameter
     private List<String> parameters = new ArrayList<>();
 
+    /**
+     * переходит в директорию, которая указана в первом параметре
+     */
     @Override
     public void run(InputStream is, OutputStream os, Environment environment) throws IOException {
         if (parameters.size() == 0) {

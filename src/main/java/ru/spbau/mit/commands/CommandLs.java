@@ -9,13 +9,16 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by YuryKravchenko on 29/12/2016.
+ * эта команда показывает имена файлов и папок в директории
  */
 public class CommandLs implements Command {
 
     @Parameter
     private List<String> parameters = new ArrayList<>();
 
+    /**
+     * если нет параметров, то показываются файлы из текущей директории, а иначе из указанной директории
+     */
     @Override
     public void run(InputStream is, OutputStream os, Environment environment) throws IOException {
         PrintWriter out = new PrintWriter(os);
