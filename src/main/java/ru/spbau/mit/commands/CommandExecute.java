@@ -19,6 +19,8 @@ public class CommandExecute implements Command {
      */
     @Override
     public void run(InputStream is, OutputStream os, Environment environment) throws IOException {
-        Runtime.getRuntime().exec(parameters.toArray(new String[parameters.size()]));
+        Runtime.getRuntime().exec(parameters.toArray(new String[parameters.size()]),
+                null,
+                new File(environment.getValue(Environment.CURRENT_DIR)));
     }
 }

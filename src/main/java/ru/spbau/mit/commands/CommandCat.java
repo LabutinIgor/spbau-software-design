@@ -39,7 +39,9 @@ public class CommandCat implements Command {
             handleOneArgument(is, os);
         } else {
             for (String arg : parameters) {
-                handleOneArgument(new FileInputStream(new File(arg)), os);
+                handleOneArgument(new FileInputStream(new File(
+                        environment.getValue(Environment.CURRENT_DIR) + "/" + arg)
+                ), os);
             }
         }
     }

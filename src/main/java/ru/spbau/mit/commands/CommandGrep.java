@@ -74,7 +74,9 @@ public class CommandGrep implements Command {
             handleOneArgument(pattern, is, os);
         } else {
             for (String arg : parameters.subList(1, parameters.size())) {
-                handleOneArgument(pattern, new FileInputStream(new File(arg)), os);
+                handleOneArgument(pattern, new FileInputStream(
+                        new File(environment.getValue(Environment.CURRENT_DIR) + "/" + arg)
+                ), os);
             }
         }
     }

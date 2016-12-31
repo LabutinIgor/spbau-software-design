@@ -83,6 +83,10 @@ public class Parser {
                 return makeCommandWithArguments(new CommandWc(), args);
             case "grep":
                 return makeCommandWithArguments(new CommandGrep(), args);
+            case "cd":
+                return makeCommandWithArguments(new CommandCd(), args);
+            case "ls":
+                return makeCommandWithArguments(new CommandLs(), args);
             default:
                 args.add(0, commandName);
                 return makeCommandWithArguments(new CommandExecute(), args);
